@@ -592,6 +592,19 @@
    * Configuração do Certificado (Slide 34)
    */
   function setupCertificate() {
+    // Configura data atual de conclusão formatada em português
+    const certDateElem = document.getElementById('cert-date-display');
+    if (certDateElem) {
+      try {
+        const now = new Date();
+        const months = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+        const formattedDate = `${String(now.getDate()).padStart(2, '0')} de ${months[now.getMonth()]} de ${now.getFullYear()}`;
+        certDateElem.textContent = formattedDate;
+      } catch (err) {
+        // Fallback silencioso
+      }
+    }
+
     if (dom.certStudentNameInput && dom.certDisplayName) {
       dom.certStudentNameInput.value = state.studentName;
       dom.certDisplayName.textContent = state.studentName;
