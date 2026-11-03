@@ -329,7 +329,7 @@
   }
 
   /**
-   * Configuração dos Quizzes Interativos
+   * Configuração dos Quizzes Interativos com Seleção, Confirmação, Cancelamento e Zoom
    */
   function setupQuizzes() {
     const quizContainers = document.querySelectorAll('.quiz-container');
@@ -337,8 +337,9 @@
     quizContainers.forEach(container => {
       const quizId = parseInt(container.getAttribute('data-quiz-id'), 10);
       const optionButtons = container.querySelectorAll('.quiz-opt-btn');
-      const feedbackBox = container.querySelector('.quiz-feedback-box');
-      const feedbackTitle = feedbackBox ? feedbackBox.querySelector('.quiz-feedback-title') : null;
+      const confirmBar = container.querySelector('.quiz-confirm-bar');
+      const btnConfirm = confirmBar ? confirmBar.querySelector('.btn-confirm-quiz') : null;
+      const btnCancel = confirmBar ? confirmBar.querySelector('.btn-cancel-quiz') : null;
 
       // Restaura resposta salva se houver
       const saved = state.quizzes[quizId];
@@ -347,29 +348,157 @@
       }
 
       optionButtons.forEach((btn, idx) => {
+        const zoomBtn = btn.querySelector('.quiz-opt-zoom-btn');
+
+        // 1. Botão de Zoom na alternativa (Sem escolher imediatamente)
+        if (zoomBtn) {
+          zoomBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            openQuizOptionZoom(container, btn, idx);
+          });
+          zoomBtn.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              e.stopPropagation();
+              openQuizOptionZoom(container, btn, idx);
+            }
+          });
+        }
+
+        // 2. Clique na opção: Apenas seleciona (não confirma de imediato)
         btn.addEventListener('click', (e) => {
           e.stopPropagation();
           if (container.classList.contains('quiz-answered')) return;
+          if (e.target.closest('.quiz-opt-zoom-btn')) return;
 
-          const isCorrect = btn.getAttribute('data-correct') === 'true';
+          selectQuizOption(container, idx);
+        });
+      });
+
+      // 3. Botão Confirmar Resposta
+      if (btnConfirm) {
+        btnConfirm.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (container.classList.contains('quiz-answered')) return;
+
+          const selectedBtn = container.querySelector('.quiz-opt-btn.selected');
+          if (!selectedBtn) return;
+
+          const selIdx = parseInt(selectedBtn.getAttribute('data-opt-idx'), 10);
+          const isCorrect = selectedBtn.getAttribute('data-correct') === 'true';
 
           state.quizzes[quizId] = {
             answered: true,
             correct: isCorrect,
-            selectedIdx: idx
+            selectedIdx: selIdx
           };
           saveProgress();
 
-          applyQuizState(container, idx, isCorrect);
+          if (confirmBar) confirmBar.classList.remove('show');
+          applyQuizState(container, selIdx, isCorrect);
           renderModulesDrawer();
           updateDashboardStats();
         });
-      });
+      }
+
+      // 4. Botão Cancelar Escolha
+      if (btnCancel) {
+        btnCancel.addEventListener('click', (e) => {
+          e.stopPropagation();
+          cancelQuizSelection(container);
+        });
+      }
     });
   }
 
+  function selectQuizOption(container, idx) {
+    if (container.classList.contains('quiz-answered')) return;
+    const optionButtons = container.querySelectorAll('.quiz-opt-btn');
+    const confirmBar = container.querySelector('.quiz-confirm-bar');
+
+    optionButtons.forEach((b, i) => {
+      b.classList.toggle('selected', i === idx);
+    });
+
+    if (confirmBar) {
+      confirmBar.classList.add('show');
+    }
+  }
+
+  function cancelQuizSelection(container) {
+    if (container.classList.contains('quiz-answered')) return;
+    const optionButtons = container.querySelectorAll('.quiz-opt-btn');
+    const confirmBar = container.querySelector('.quiz-confirm-bar');
+
+    optionButtons.forEach(b => b.classList.remove('selected'));
+    if (confirmBar) {
+      confirmBar.classList.remove('show');
+    }
+  }
+
   /**
-   * Aplica o estado visual do quiz
+   * Abre uma alternativa específica no Zoom Modal (~70% da tela)
+   */
+  function openQuizOptionZoom(container, optionBtn, optIdx) {
+    if (!dom.cardZoomModal || !dom.cardZoomContent || !dom.cardZoomContainer) return;
+
+    const slide = container.closest('.slide');
+    const slideCat = slide ? slide.querySelector('.slide-category') : null;
+    const catText = slideCat ? slideCat.textContent.replace(/\s+/g, ' ').trim() : 'QUIZ INTERATIVO';
+
+    const letterElem = optionBtn.querySelector('.quiz-opt-letter');
+    const descElem = optionBtn.querySelector('.quiz-opt-desc');
+
+    const letter = letterElem ? letterElem.textContent.trim() : 'A';
+    const text = descElem ? descElem.innerHTML : '';
+
+    dom.cardZoomContainer.className = 'card-modal-container theme-cyan';
+
+    dom.cardZoomContent.innerHTML = `
+      <div class="zoomed-header">
+        <div class="zoomed-icon cyan" style="font-weight: 800; font-size: 1.4rem;">
+          ${letter}
+        </div>
+        <div class="zoomed-meta">
+          <span class="zoomed-tag">${catText} • ALTERNATIVA ${letter}</span>
+          <h2 class="zoomed-title">Alternativa ${letter}</h2>
+        </div>
+      </div>
+      <div class="zoomed-body">
+        <p style="font-size: clamp(1.2rem, 1.8vw, 1.6rem); line-height: 1.55; color: #f8fafc; font-weight: 500;">
+          ${text}
+        </p>
+      </div>
+      <div class="zoomed-quiz-actions">
+        <button class="action-pill primary" id="btn-zoom-select-opt" style="padding: 10px 22px; font-weight: 700;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          Selecionar esta Alternativa
+        </button>
+        <button class="action-pill" onclick="window.PresentationApp.closeCardZoom()" style="padding: 10px 20px;">
+          Fechar (Esc)
+        </button>
+      </div>
+    `;
+
+    const btnSelect = dom.cardZoomContent.querySelector('#btn-zoom-select-opt');
+    if (btnSelect) {
+      btnSelect.addEventListener('click', () => {
+        closeCardZoom();
+        selectQuizOption(container, optIdx);
+      });
+    }
+
+    dom.cardZoomModal.classList.add('open');
+    dom.cardZoomModal.setAttribute('aria-hidden', 'false');
+    state.isCardZoomOpen = true;
+
+    if (dom.cardZoomCloseBtn) {
+      dom.cardZoomCloseBtn.focus();
+    }
+  }
+
+  /**
+   * Aplica o estado visual do quiz após confirmação
    */
   function applyQuizState(container, selectedIdx, isCorrect) {
     container.classList.add('quiz-answered');
@@ -379,6 +508,7 @@
     const scoreBadge = feedbackBox ? feedbackBox.querySelector('.quiz-score-badge') : null;
 
     optionButtons.forEach((b, i) => {
+      b.classList.remove('selected');
       b.classList.add('answered');
       const bCorrect = b.getAttribute('data-correct') === 'true';
 
@@ -418,8 +548,11 @@
     container.classList.remove('quiz-answered');
     const optionButtons = container.querySelectorAll('.quiz-opt-btn');
     optionButtons.forEach(b => {
-      b.classList.remove('answered', 'correct', 'wrong', 'dimmed');
+      b.classList.remove('answered', 'correct', 'wrong', 'dimmed', 'selected');
     });
+
+    const confirmBar = container.querySelector('.quiz-confirm-bar');
+    if (confirmBar) confirmBar.classList.remove('show');
 
     const feedbackBox = container.querySelector('.quiz-feedback-box');
     if (feedbackBox) {
@@ -579,12 +712,12 @@
       elem.setAttribute('title', tooltip);
 
       elem.addEventListener('click', (e) => {
-        if (e.target.closest('.media-toggle-pill, button:not(.card-modal-close), a, input')) return;
+        if (e.target.closest('.media-toggle-pill, .quiz-opt-zoom-btn, .quiz-confirm-bar, button:not(.card-modal-close), a, input')) return;
         openCardZoom(elem);
       });
 
       elem.addEventListener('keydown', (e) => {
-        if (e.target.closest('.media-toggle-pill, button, a, input')) return;
+        if (e.target.closest('.media-toggle-pill, .quiz-opt-zoom-btn, .quiz-confirm-bar, button, a, input')) return;
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
           openCardZoom(elem);

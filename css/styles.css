@@ -1992,7 +1992,7 @@ body.light-mode .zoomed-subtitle-large {
 
 .quiz-opt-btn {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: clamp(8px, 1.1vw, 14px);
   background: rgba(255, 255, 255, 0.03);
   border: 1.5px solid var(--surface-border);
@@ -2004,6 +2004,7 @@ body.light-mode .zoomed-subtitle-large {
   transition: var(--transition-smooth);
   width: 100%;
   font-family: inherit;
+  position: relative;
 }
 
 .quiz-opt-btn:hover:not(.answered) {
@@ -2037,6 +2038,97 @@ body.light-mode .zoomed-subtitle-large {
   line-height: 1.38;
   color: var(--text-main);
   flex: 1;
+}
+
+/* Botão individual para ampliar a alternativa sem selecionar imediatamente */
+.quiz-opt-zoom-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: clamp(24px, 1.8vw, 28px);
+  height: clamp(24px, 1.8vw, 28px);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-muted);
+  cursor: pointer;
+  flex-shrink: 0;
+  margin-left: 8px;
+  transition: var(--transition-smooth);
+}
+
+.quiz-opt-zoom-btn:hover {
+  background: var(--cyan-accent);
+  color: #000;
+  border-color: var(--cyan-accent);
+  transform: scale(1.15);
+  box-shadow: 0 0 10px var(--cyan-glow);
+}
+
+.quiz-opt-zoom-btn svg {
+  width: clamp(13px, 1vw, 16px);
+  height: clamp(13px, 1vw, 16px);
+}
+
+/* Estado de Seleção da Opção (antes da confirmação) */
+.quiz-opt-btn.selected {
+  background: rgba(6, 182, 212, 0.14) !important;
+  border-color: var(--cyan-accent) !important;
+  box-shadow: 0 0 16px var(--cyan-glow);
+}
+
+.quiz-opt-btn.selected .quiz-opt-letter {
+  background: var(--cyan-accent) !important;
+  color: #000 !important;
+}
+
+/* Barra de Confirmação da Resposta */
+.quiz-confirm-bar {
+  display: none;
+  align-items: center;
+  gap: 10px;
+  margin-top: clamp(4px, 0.8vh, 8px);
+  animation: fadeIn 0.25s ease forwards;
+}
+
+.quiz-confirm-bar.show {
+  display: flex;
+}
+
+.quiz-confirm-bar .btn-confirm-quiz {
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  border-color: #34d399;
+  color: #ffffff;
+  font-weight: 700;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.35);
+}
+
+.quiz-confirm-bar .btn-confirm-quiz:hover {
+  background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.45);
+}
+
+.quiz-confirm-bar .btn-cancel-quiz {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.15);
+  color: var(--text-muted);
+}
+
+.quiz-confirm-bar .btn-cancel-quiz:hover {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: var(--rose-danger);
+  color: var(--rose-danger);
+}
+
+/* Ações dentro do Zoom Modal quando for alternativa de Quiz */
+.zoomed-quiz-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: clamp(14px, 2vh, 22px);
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .quiz-opt-btn.correct {
