@@ -38,3 +38,4 @@ Apresentação web interativa, moderna e responsiva sobre conscientização em S
   - Barra de controle inferior (Dock)
   - Barra de progresso linear no topo
   - Teclas de atalho: `F` (Tela cheia), `T` (Tema), `Esc` (Fechar modal / Visão geral)
+
