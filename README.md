@@ -3,7 +3,8 @@
 Plataforma web de capacitação e conscientização corporativa em Segurança da Informação, Engenharia Social, Proteção de Dados (LGPD) e Boas Práticas Digitais.
 
 🔗 **Acesse online no GitHub Pages:**  
-**[https://klawdhynney.github.io/seguranca-da-informacao/](https://klawdhynney.github.io/seguranca-da-informacao/)**
+- **Treinamento Interativo:** [https://cyberexecutive.github.io/cyber/](https://cyberexecutive.github.io/cyber/)  
+- **Landing Page de Vendas:** [https://cyberexecutive.github.io/cyber/landing.html](https://cyberexecutive.github.io/cyber/landing.html)  
 
 ---
 
