@@ -105,7 +105,16 @@
     maxDemoSlide: 8, // Slides 1 a 8 liberados na demonstração (Módulos 01 e 02)
     isUnlocked: false,
     intendedSlide: null,
-    validAccessKeys: ['CYBER2026', 'PRO2026', 'VIP2026', 'ALUNO2026'],
+    validAccessHashes: [
+      '085301361b7d9548d2916efbed814b03cce46e6de7496dc04cc83f8aa6618b84', // CYBER-EXEC-8492-PRO
+      '18d37b403c70c6b36a3f77092e3e5ec148b6bd662f3ff3ebc8b250f723c4e8d5', // CYBEREXEC8492PRO
+      '0cedb0f9a64a63b1af95a6364dbaf49950293a82a9e32ea1cfc824c637f63595', // SEC-2026-VIP-9741
+      '4324d6bbee7f0836b80cc736fa81ec7ee78f6e0d879c33d6c3e2cb5f4610ae14', // SEC2026VIP9741
+      '667dd167ca25703d48208f61810399ea00d671ec39ec8c05e32ac499c09ce92a', // CYBER-PRO-2026-X9K
+      '31f76bd6e275f2a0b9f7c17c93bd2af763ae933b2f8ca1e042bf69a7dd4a1c1d', // CYBERPRO2026X9K
+      '8c8c1fee9a2fec548c42cf5915d272d7bf638df3241d62d7a9ce7467d4ed5404', // ALUNO-CYBER-8842
+      '142d97345d0069ccd1d3a6deb8542fea5f8205f33d46b9a1d376370c1152fe5b'  // ALUNOCYBER8842
+    ],
     isFullscreen: false,
     isOverviewOpen: false,
     isHelpOpen: false,
@@ -1043,11 +1052,81 @@
   }
 
   /**
+   * Algoritmo Criptográfico SHA-256 para Proteção de Chaves de Acesso
+   * Impede que a chave seja visualizada em texto puro no código-fonte ou no DevTools
+   */
+  function sha256(ascii) {
+    function rightRotate(value, amount) { return (value >>> amount) | (value << (32 - amount)); }
+    var mathPow = Math.pow;
+    var maxWord = mathPow(2, 32);
+    var lengthProperty = 'length';
+    var i, j;
+    var result = '';
+    var words = [];
+    var asciiBitLength = ascii[lengthProperty] * 8;
+    var hash = [];
+    var k = [];
+    var primeCounter = 0;
+    var isComposite = {};
+    for (var candidate = 2; primeCounter < 64; candidate++) {
+      if (!isComposite[candidate]) {
+        for (i = 0; i < 313; i += candidate) { isComposite[i] = candidate; }
+        hash[primeCounter] = (mathPow(candidate, .5) * maxWord) | 0;
+        k[primeCounter++] = (mathPow(candidate, 1/3) * maxWord) | 0;
+      }
+    }
+    ascii += '\x80';
+    while (ascii[lengthProperty] % 64 - 56) ascii += '\x00';
+    for (i = 0; i < ascii[lengthProperty]; i++) {
+      j = ascii.charCodeAt(i);
+      if (j >> 8) return '';
+      words[i >> 2] |= j << ((3 - i) % 4) * 8;
+    }
+    words[words[lengthProperty]] = ((asciiBitLength / maxWord) | 0);
+    words[words[lengthProperty]] = (asciiBitLength);
+    for (j = 0; j < words[lengthProperty];) {
+      var w = words.slice(j, j += 16);
+      var oldHash = hash;
+      hash = hash.slice(0, 8);
+      for (i = 0; i < 64; i++) {
+        var w15 = w[i - 15], w2 = w[i - 2];
+        var s0 = rightRotate(w15, 7) ^ rightRotate(w15, 18) ^ (w15 >>> 3);
+        var s1 = rightRotate(w2, 17) ^ rightRotate(w2, 19) ^ (w2 >>> 10);
+        var ch = (hash[4] & hash[5]) ^ (~hash[4] & hash[6]);
+        var temp1 = hash[7] + (rightRotate(hash[4], 6) ^ rightRotate(hash[4], 11) ^ rightRotate(hash[4], 25)) + ch + k[i] + (w[i] = (i < 16) ? w[i] : (w[i - 16] + s0 + w[i - 7] + s1) | 0);
+        var maj = (hash[0] & hash[1]) ^ (hash[0] & hash[2]) ^ (hash[1] & hash[2]);
+        var temp2 = (rightRotate(hash[0], 2) ^ rightRotate(hash[0], 13) ^ rightRotate(hash[0], 22)) + maj;
+        hash = [(temp1 + temp2) | 0].concat(hash);
+        hash[4] = (hash[4] + temp1) | 0;
+      }
+      for (i = 0; i < 8; i++) { hash[i] = (hash[i] + oldHash[i]) | 0; }
+    }
+    for (i = 0; i < 8; i++) {
+      for (var i2 = 3; i2 >= 0; i2--) {
+        var b = (hash[i] >> (8 * i2)) & 255;
+        result += ((b < 16) ? 0 : '') + b.toString(16);
+      }
+    }
+    return result;
+  }
+
+  function isKeyValid(inputKey) {
+    if (!inputKey || typeof inputKey !== 'string') return false;
+    const cleanKey = inputKey.trim().toUpperCase();
+    if (!cleanKey) return false;
+
+    const hashRaw = sha256(cleanKey);
+    const hashNoSeparators = sha256(cleanKey.replace(/[\s\-_]/g, ''));
+
+    return state.validAccessHashes.includes(hashRaw) || state.validAccessHashes.includes(hashNoSeparators);
+  }
+
+  /**
    * Controle de Acesso e Modo Demonstração (Opção A + Opção B)
    */
   function checkAccessState() {
     try {
-      // 1. Opção B: Verificação via Parâmetro da URL (?acesso=CYBER2026, ?token=..., ?aluno=..., ?key=...)
+      // 1. Opção B: Verificação via Parâmetro da URL (?acesso=..., ?token=..., ?aluno=..., ?key=...)
       const urlParams = new URLSearchParams(window.location.search);
       const accessParam = (
         urlParams.get('acesso') ||
@@ -1055,9 +1134,9 @@
         urlParams.get('aluno') ||
         urlParams.get('key') ||
         ''
-      ).trim().toUpperCase();
+      ).trim();
 
-      if (accessParam && state.validAccessKeys.includes(accessParam)) {
+      if (accessParam && isKeyValid(accessParam)) {
         unlockCourse(true, '🎉 Acesso Completo Ativado via Link! Bem-vindo(a) ao treinamento.');
         return;
       }
@@ -1177,7 +1256,7 @@
     if (e && e.preventDefault) e.preventDefault();
     if (!dom.inputUnlockKey) return;
 
-    const rawKey = dom.inputUnlockKey.value.trim().toUpperCase();
+    const rawKey = dom.inputUnlockKey.value.trim();
     if (!rawKey) {
       if (dom.unlockStatusMsg) {
         dom.unlockStatusMsg.textContent = 'Por favor, digite sua chave de acesso.';
@@ -1187,7 +1266,7 @@
       return;
     }
 
-    if (state.validAccessKeys.includes(rawKey)) {
+    if (isKeyValid(rawKey)) {
       if (dom.unlockStatusMsg) {
         dom.unlockStatusMsg.textContent = '✓ Chave validada! Liberando acesso...';
         dom.unlockStatusMsg.className = 'unlock-status-msg success';
