@@ -102,11 +102,18 @@
   const state = {
     currentSlide: 1,
     totalSlides: 34,
+    maxDemoSlide: 8, // Slides 1 a 8 liberados na demonstração (Módulos 01 e 02)
+    isUnlocked: false,
+    intendedSlide: null,
+    validAccessKeys: ['CYBER2026', 'PRO2026', 'VIP2026', 'ALUNO2026'],
     isFullscreen: false,
     isOverviewOpen: false,
     isHelpOpen: false,
     isCardZoomOpen: false,
     isModulesDrawerOpen: false,
+    isPaywallOpen: false,
+    isUnlockModalOpen: false,
+    toastTimer: null,
     quizzes: {},
     studentName: 'Colaborador Exemplar',
     touchStartX: 0,
@@ -147,7 +154,20 @@
     certStudentNameInput: document.getElementById('cert-student-name'),
     certDisplayName: document.getElementById('cert-display-name'),
     statModulesCompleted: document.getElementById('stat-modules-completed'),
-    statScorePercent: document.getElementById('stat-score-percent')
+    statScorePercent: document.getElementById('stat-score-percent'),
+    paywallModal: document.getElementById('paywall-modal'),
+    closePaywallBtn: document.getElementById('close-paywall-btn'),
+    btnPaywallEnterKey: document.getElementById('btn-paywall-enter-key'),
+    unlockModal: document.getElementById('unlock-modal'),
+    closeUnlockBtn: document.getElementById('close-unlock-btn'),
+    formUnlockKey: document.getElementById('form-unlock-key'),
+    inputUnlockKey: document.getElementById('input-unlock-key'),
+    btnSubmitUnlock: document.getElementById('btn-submit-unlock'),
+    unlockStatusMsg: document.getElementById('unlock-status-msg'),
+    btnHeaderUnlock: document.getElementById('btn-header-unlock'),
+    accessBadgeText: document.getElementById('access-badge-text'),
+    badgeActionLabel: document.getElementById('badge-action-label'),
+    courseToast: document.getElementById('course-toast')
   };
 
   /**
@@ -159,6 +179,9 @@
 
     // Carrega dados salvos em localStorage
     loadSavedProgress();
+
+    // Verifica se há token de acesso na URL ou chave salva
+    checkAccessState();
 
     buildDots();
     buildOverviewGrid();
@@ -236,13 +259,14 @@
       const titleElem = slide.querySelector('.slide-title');
       const categoryElem = slide.querySelector('.slide-category');
 
+      const isLocked = !state.isUnlocked && slideNum > state.maxDemoSlide;
       const card = document.createElement('div');
-      card.className = 'overview-card' + (slideNum === state.currentSlide ? ' active' : '');
+      card.className = 'overview-card' + (slideNum === state.currentSlide ? ' active' : '') + (isLocked ? ' locked-card' : '');
       card.setAttribute('data-target', slideNum);
 
       const numSpan = document.createElement('span');
       numSpan.className = 'card-num';
-      numSpan.textContent = `SLIDE ${String(slideNum).padStart(2, '0')}`;
+      numSpan.textContent = isLocked ? `🔒 SLIDE ${String(slideNum).padStart(2, '0')}` : `SLIDE ${String(slideNum).padStart(2, '0')}`;
 
       const nameSpan = document.createElement('span');
       nameSpan.className = 'card-name';
@@ -253,8 +277,13 @@
       card.appendChild(nameSpan);
 
       card.addEventListener('click', () => {
-        goToSlide(slideNum);
-        toggleOverviewModal(false);
+        if (isLocked) {
+          toggleOverviewModal(false);
+          openPaywallModal(slideNum);
+        } else {
+          goToSlide(slideNum);
+          toggleOverviewModal(false);
+        }
       });
 
       dom.overviewGrid.appendChild(card);
@@ -274,13 +303,16 @@
     modulesMeta.forEach(mod => {
       const isQuizDone = mod.quizSlide ? (state.quizzes[mod.id] && state.quizzes[mod.id].correct) : false;
       const isCurrentMod = state.currentSlide >= mod.startSlide && state.currentSlide <= mod.endSlide;
+      const isLocked = !state.isUnlocked && mod.id > 2;
       if (isQuizDone) completedModulesCount++;
 
       const card = document.createElement('div');
-      card.className = 'drawer-module-card' + (isCurrentMod ? ' active-mod' : '');
+      card.className = 'drawer-module-card' + (isCurrentMod ? ' active-mod' : '') + (isLocked ? ' drawer-module-locked' : '');
 
       let statusHtml = '<span class="drawer-module-status">⚪ Em aberto</span>';
-      if (mod.id === 11) {
+      if (isLocked) {
+        statusHtml = '<span class="drawer-module-locked-tag">🔒 Alunos</span>';
+      } else if (mod.id === 11) {
         statusHtml = '<span class="drawer-module-status completed">★ Certificação</span>';
       } else if (isQuizDone) {
         statusHtml = '<span class="drawer-module-status completed">✅ Concluído (100%)</span>';
@@ -308,15 +340,25 @@
         pill.textContent = isQuiz ? `Quiz ${mod.id}` : `Aula ${s}`;
         pill.addEventListener('click', (e) => {
           e.stopPropagation();
-          goToSlide(s);
-          toggleModulesDrawer(false);
+          if (isLocked) {
+            toggleModulesDrawer(false);
+            openPaywallModal(s);
+          } else {
+            goToSlide(s);
+            toggleModulesDrawer(false);
+          }
         });
         chipsContainer.appendChild(pill);
       }
 
       card.addEventListener('click', () => {
-        goToSlide(mod.startSlide);
-        toggleModulesDrawer(false);
+        if (isLocked) {
+          toggleModulesDrawer(false);
+          openPaywallModal(mod.startSlide);
+        } else {
+          goToSlide(mod.startSlide);
+          toggleModulesDrawer(false);
+        }
       });
 
       dom.drawerModulesContainer.appendChild(card);
@@ -882,6 +924,16 @@
     if (slideNum < 1) slideNum = 1;
     if (slideNum > state.totalSlides) slideNum = state.totalSlides;
 
+    // Trava de Demonstração / Paywall nos Módulos 03 a 11
+    if (!state.isUnlocked && slideNum > state.maxDemoSlide) {
+      openPaywallModal(slideNum);
+      if (state.currentSlide > state.maxDemoSlide) {
+        slideNum = 1;
+      } else {
+        return;
+      }
+    }
+
     if (state.isCardZoomOpen) {
       closeCardZoom();
     }
@@ -990,6 +1042,182 @@
     document.body.classList.toggle('light-mode');
   }
 
+  /**
+   * Controle de Acesso e Modo Demonstração (Opção A + Opção B)
+   */
+  function checkAccessState() {
+    try {
+      // 1. Opção B: Verificação via Parâmetro da URL (?acesso=CYBER2026, ?token=..., ?aluno=..., ?key=...)
+      const urlParams = new URLSearchParams(window.location.search);
+      const accessParam = (
+        urlParams.get('acesso') ||
+        urlParams.get('token') ||
+        urlParams.get('aluno') ||
+        urlParams.get('key') ||
+        ''
+      ).trim().toUpperCase();
+
+      if (accessParam && state.validAccessKeys.includes(accessParam)) {
+        unlockCourse(true, '🎉 Acesso Completo Ativado via Link! Bem-vindo(a) ao treinamento.');
+        return;
+      }
+
+      // 2. Opção A: Verificação de Chave/Token persistido em localStorage
+      const savedUnlock = localStorage.getItem('cybersec_course_unlocked');
+      if (savedUnlock === 'true') {
+        state.isUnlocked = true;
+        updateUnlockUI();
+      } else {
+        state.isUnlocked = false;
+        updateUnlockUI();
+      }
+    } catch (e) {
+      console.warn('Erro ao verificar status de acesso:', e);
+    }
+  }
+
+  function unlockCourse(showFeedbackToast = true, toastMessage = '🎉 Parabéns! Acesso completo liberado com sucesso.') {
+    state.isUnlocked = true;
+    try {
+      localStorage.setItem('cybersec_course_unlocked', 'true');
+    } catch (e) {}
+
+    updateUnlockUI();
+    buildOverviewGrid();
+    renderModulesDrawer();
+
+    if (showFeedbackToast) {
+      showToast(toastMessage, 'success');
+    }
+
+    closePaywallModal();
+    closeUnlockModal();
+
+    if (state.intendedSlide) {
+      const target = state.intendedSlide;
+      state.intendedSlide = null;
+      goToSlide(target);
+    }
+  }
+
+  function lockCourse() {
+    state.isUnlocked = false;
+    try {
+      localStorage.removeItem('cybersec_course_unlocked');
+    } catch (e) {}
+
+    updateUnlockUI();
+    buildOverviewGrid();
+    renderModulesDrawer();
+    showToast('Modo demonstração ativado.', 'info');
+    if (state.currentSlide > state.maxDemoSlide) {
+      goToSlide(1);
+    }
+  }
+
+  function updateUnlockUI() {
+    if (!dom.btnHeaderUnlock) return;
+    if (state.isUnlocked) {
+      dom.btnHeaderUnlock.classList.add('unlocked');
+      if (dom.accessBadgeText) dom.accessBadgeText.textContent = 'Acesso Completo';
+      if (dom.badgeActionLabel) dom.badgeActionLabel.textContent = '✓ Liberado';
+      dom.btnHeaderUnlock.title = 'Acesso Completo Liberado (Clique para detalhes)';
+    } else {
+      dom.btnHeaderUnlock.classList.remove('unlocked');
+      if (dom.accessBadgeText) dom.accessBadgeText.textContent = 'Demonstração Gratuita';
+      if (dom.badgeActionLabel) dom.badgeActionLabel.textContent = '🔑 Já sou Aluno';
+      dom.btnHeaderUnlock.title = 'Versão Demo (Módulos 1-2). Clique para inserir chave de acesso';
+    }
+  }
+
+  function openPaywallModal(intendedSlide = null) {
+    if (intendedSlide) state.intendedSlide = intendedSlide;
+    state.isPaywallOpen = true;
+    if (dom.paywallModal) {
+      dom.paywallModal.classList.add('open');
+      dom.paywallModal.setAttribute('aria-hidden', 'false');
+    }
+  }
+
+  function closePaywallModal() {
+    state.isPaywallOpen = false;
+    if (dom.paywallModal) {
+      dom.paywallModal.classList.remove('open');
+      dom.paywallModal.setAttribute('aria-hidden', 'true');
+    }
+  }
+
+  function openUnlockModal() {
+    state.isUnlockModalOpen = true;
+    if (dom.unlockStatusMsg) {
+      dom.unlockStatusMsg.textContent = '';
+      dom.unlockStatusMsg.className = 'unlock-status-msg';
+    }
+    if (dom.inputUnlockKey) {
+      dom.inputUnlockKey.value = '';
+    }
+    if (dom.unlockModal) {
+      dom.unlockModal.classList.add('open');
+      dom.unlockModal.setAttribute('aria-hidden', 'false');
+      setTimeout(() => {
+        if (dom.inputUnlockKey) dom.inputUnlockKey.focus();
+      }, 100);
+    }
+  }
+
+  function closeUnlockModal() {
+    state.isUnlockModalOpen = false;
+    if (dom.unlockModal) {
+      dom.unlockModal.classList.remove('open');
+      dom.unlockModal.setAttribute('aria-hidden', 'true');
+    }
+  }
+
+  function submitUnlockKey(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    if (!dom.inputUnlockKey) return;
+
+    const rawKey = dom.inputUnlockKey.value.trim().toUpperCase();
+    if (!rawKey) {
+      if (dom.unlockStatusMsg) {
+        dom.unlockStatusMsg.textContent = 'Por favor, digite sua chave de acesso.';
+        dom.unlockStatusMsg.className = 'unlock-status-msg error';
+      }
+      dom.inputUnlockKey.focus();
+      return;
+    }
+
+    if (state.validAccessKeys.includes(rawKey)) {
+      if (dom.unlockStatusMsg) {
+        dom.unlockStatusMsg.textContent = '✓ Chave validada! Liberando acesso...';
+        dom.unlockStatusMsg.className = 'unlock-status-msg success';
+      }
+      if (dom.btnSubmitUnlock) dom.btnSubmitUnlock.disabled = true;
+
+      setTimeout(() => {
+        if (dom.btnSubmitUnlock) dom.btnSubmitUnlock.disabled = false;
+        unlockCourse(true, '🎉 Parabéns! Acesso completo liberado com sucesso.');
+      }, 500);
+    } else {
+      if (dom.unlockStatusMsg) {
+        dom.unlockStatusMsg.textContent = '❌ Chave inválida. Verifique o código recebido no e-mail.';
+        dom.unlockStatusMsg.className = 'unlock-status-msg error';
+      }
+      dom.inputUnlockKey.select();
+      dom.inputUnlockKey.focus();
+    }
+  }
+
+  function showToast(message, type = 'info') {
+    if (!dom.courseToast) return;
+    clearTimeout(state.toastTimer);
+    dom.courseToast.textContent = message;
+    dom.courseToast.className = 'course-toast show ' + type;
+    state.toastTimer = setTimeout(() => {
+      dom.courseToast.classList.remove('show');
+    }, 4000);
+  }
+
   function bindEvents() {
     if (dom.prevBtn) dom.prevBtn.addEventListener('click', prevSlide);
     if (dom.nextBtn) dom.nextBtn.addEventListener('click', nextSlide);
@@ -999,6 +1227,42 @@
     if (dom.helpBtn) dom.helpBtn.addEventListener('click', () => toggleHelpModal());
     if (dom.themeBtn) dom.themeBtn.addEventListener('click', toggleTheme);
     if (dom.modulesBtn) dom.modulesBtn.addEventListener('click', () => toggleModulesDrawer());
+
+    // Botões e Modais de Trava / Acesso
+    if (dom.btnHeaderUnlock) {
+      dom.btnHeaderUnlock.addEventListener('click', () => {
+        if (state.isUnlocked) {
+          showToast('✅ Você possui Acesso Completo a todos os 11 módulos e ao Certificado!', 'success');
+        } else {
+          openUnlockModal();
+        }
+      });
+    }
+
+    if (dom.closePaywallBtn) dom.closePaywallBtn.addEventListener('click', closePaywallModal);
+
+    if (dom.btnPaywallEnterKey) {
+      dom.btnPaywallEnterKey.addEventListener('click', () => {
+        closePaywallModal();
+        openUnlockModal();
+      });
+    }
+
+    if (dom.closeUnlockBtn) dom.closeUnlockBtn.addEventListener('click', closeUnlockModal);
+
+    if (dom.formUnlockKey) dom.formUnlockKey.addEventListener('submit', submitUnlockKey);
+
+    if (dom.paywallModal) {
+      dom.paywallModal.addEventListener('click', (e) => {
+        if (e.target === dom.paywallModal) closePaywallModal();
+      });
+    }
+
+    if (dom.unlockModal) {
+      dom.unlockModal.addEventListener('click', (e) => {
+        if (e.target === dom.unlockModal) closeUnlockModal();
+      });
+    }
 
     if (dom.closeOverviewBtn) dom.closeOverviewBtn.addEventListener('click', () => toggleOverviewModal(false));
     if (dom.closeHelpBtn) dom.closeHelpBtn.addEventListener('click', () => toggleHelpModal(false));
@@ -1043,6 +1307,14 @@
     if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
 
     if (e.key === 'Escape') {
+      if (state.isUnlockModalOpen) {
+        closeUnlockModal();
+        return;
+      }
+      if (state.isPaywallOpen) {
+        closePaywallModal();
+        return;
+      }
       if (state.isCardZoomOpen) {
         closeCardZoom();
         return;
@@ -1061,7 +1333,7 @@
       }
     }
 
-    if (state.isOverviewOpen || state.isHelpOpen) return;
+    if (state.isOverviewOpen || state.isHelpOpen || state.isPaywallOpen || state.isUnlockModalOpen) return;
 
     switch (e.key) {
       case 'ArrowRight':
@@ -1149,6 +1421,12 @@
     toggleTheme,
     retryQuiz,
     restartCourse,
+    unlockCourse,
+    lockCourse,
+    openPaywallModal,
+    closePaywallModal,
+    openUnlockModal,
+    closeUnlockModal,
     getState: () => ({ ...state })
   };
 

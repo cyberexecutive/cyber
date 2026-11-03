@@ -23,6 +23,15 @@
     </div>
 
     <div class="header-actions">
+      <!-- Badge de Acesso / Botão de Desbloqueio do Aluno -->
+      <div id="access-status-container">
+        <button class="header-pill-badge" id="btn-header-unlock" title="Status de Acesso do Treinamento">
+          <span class="badge-dot" id="access-badge-dot"></span>
+          <span id="access-badge-text">⚡ Demonstração Gratuita</span>
+          <span class="badge-action" id="badge-action-label">• 🔑 Já sou Aluno</span>
+        </button>
+      </div>
+
       <!-- Botão Página de Vendas (Landing Page) -->
       <a href="landing.html" class="header-btn" title="Página de Apresentação e Vendas (Landing Page)" style="text-decoration: none;">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -3492,6 +3501,88 @@
       </div>
     </div>
   </div>
+
+  <!-- Modal de Paywall / Trava de Demonstração -->
+  <div class="modal-overlay" id="paywall-modal" aria-hidden="true">
+    <div class="overview-content paywall-card-container">
+      <button class="close-modal-btn" id="close-paywall-btn" title="Fechar (Esc)">✕</button>
+      
+      <div class="paywall-header">
+        <div class="paywall-badge">
+          🔒 CONTEÚDO EXCLUSIVO PARA ALUNOS
+        </div>
+        <h2 class="paywall-title">Você Concluiu a <span class="highlight-cyan">Demonstração Gratuita</span>!</h2>
+        <p class="paywall-subtitle">
+          Parabéns por completar as simulações dos Módulos 01 e 02. Para continuar sua capacitação e liberar os <strong>11 Módulos Completos</strong> e o <strong>Certificado Oficial</strong>, garanta seu acesso com desconto de lançamento.
+        </p>
+      </div>
+
+      <div class="paywall-benefits-list">
+        <div class="paywall-benefit-item">
+          <div class="paywall-benefit-icon">🛡️</div>
+          <div>
+            <strong>11 Módulos Completos sem Restrições</strong>
+            <span>Phishing, Deepfakes, Gestão de Senhas, LGPD, IA, Wi-Fi e Resposta a Incidentes</span>
+          </div>
+        </div>
+        <div class="paywall-benefit-item">
+          <div class="paywall-benefit-icon">🎯</div>
+          <div>
+            <strong>10 Casos Práticos Reais com Tomada de Decisão</strong>
+            <span>Simulações interativas com pontuação individual e feedback detalhado</span>
+          </div>
+        </div>
+        <div class="paywall-benefit-item">
+          <div class="paywall-benefit-icon">📜</div>
+          <div>
+            <strong>Certificado Oficial Executivo (4 Horas)</strong>
+            <span>Com seu nome, data, código de autenticidade e assinaturas do CISO e DPO</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="paywall-action-box">
+        <div class="paywall-price-info">
+          <span class="paywall-price-label">Acesso Vitalício por apenas:</span>
+          <div class="paywall-price-value">R$ 47<small>,00</small> <span class="paywall-price-sub">(ou 5x de R$ 10,25)</span></div>
+        </div>
+        <a href="landing.html#inscricao" class="action-pill primary paywall-cta-btn" id="btn-paywall-buy" target="_blank" rel="noopener">
+          🔓 Desbloquear Curso Completo Agora
+        </a>
+      </div>
+
+      <div class="paywall-footer-hint">
+        <span>Já adquiriu o treinamento?</span>
+        <button type="button" class="paywall-unlock-link" id="btn-paywall-enter-key">Inserir Chave de Acesso do Aluno</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para Inserir Chave de Acesso -->
+  <div class="modal-overlay" id="unlock-modal" aria-hidden="true">
+    <div class="overview-content unlock-card-container">
+      <button class="close-modal-btn" id="close-unlock-btn" title="Fechar (Esc)">✕</button>
+      
+      <div class="unlock-icon-circle">🔑</div>
+      <h3 class="unlock-title">Ativação de Acesso do Aluno</h3>
+      <p class="unlock-desc">Digite a chave de acesso enviada no seu e-mail de confirmação da compra:</p>
+      
+      <form id="form-unlock-key" onsubmit="return false;" class="unlock-form">
+        <div class="unlock-input-wrap">
+          <input type="text" id="input-unlock-key" class="unlock-input" placeholder="Ex: CYBER2026" autocomplete="off" />
+          <button type="submit" class="action-pill primary" id="btn-submit-unlock">Ativar Acesso</button>
+        </div>
+        <div class="unlock-status-msg" id="unlock-status-msg"></div>
+      </form>
+
+      <p class="unlock-support-note">
+        Dúvidas com o seu acesso? Verifique a caixa de spam do e-mail da compra ou fale com nosso suporte.
+      </p>
+    </div>
+  </div>
+
+  <!-- Toast Flutuante de Notificação -->
+  <div id="course-toast" class="course-toast" aria-live="polite"></div>
 
   <script src="js/presentation.js"></script>
 </body>
