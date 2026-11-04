@@ -124,7 +124,8 @@
     isUnlockModalOpen: false,
     toastTimer: null,
     quizzes: {},
-    studentName: 'Colaborador Exemplar',
+    studentName: 'Colaborador(a) Exemplar',
+    studentCpf: '000.000.000-00',
     touchStartX: 0,
     touchStartY: 0,
     touchEndX: 0,
@@ -161,7 +162,9 @@
     drawerProgressPercent: document.getElementById('drawer-progress-percent'),
     drawerProgressBar: document.getElementById('drawer-progress-bar'),
     certStudentNameInput: document.getElementById('cert-student-name'),
+    certStudentCpfInput: document.getElementById('cert-student-cpf'),
     certDisplayName: document.getElementById('cert-display-name'),
+    certDisplayCpf: document.getElementById('cert-display-cpf'),
     statModulesCompleted: document.getElementById('stat-modules-completed'),
     statScorePercent: document.getElementById('stat-score-percent'),
     paywallModal: document.getElementById('paywall-modal'),
@@ -222,7 +225,11 @@
       if (savedQuizzes) state.quizzes = JSON.parse(savedQuizzes);
 
       const savedName = localStorage.getItem('cybersec_student_name');
-      if (savedName) state.studentName = savedName;
+      if (savedName && !savedName.toLowerCase().includes('claudinei')) {
+        state.studentName = savedName;
+      }
+      const savedCpf = localStorage.getItem('cybersec_student_cpf');
+      if (savedCpf) state.studentCpf = savedCpf;
     } catch (e) {
       console.warn('Não foi possível acessar localStorage:', e);
     }
@@ -235,6 +242,7 @@
     try {
       localStorage.setItem('cybersec_quizzes', JSON.stringify(state.quizzes));
       localStorage.setItem('cybersec_student_name', state.studentName);
+      localStorage.setItem('cybersec_student_cpf', state.studentCpf || '');
     } catch (e) {
       console.warn('Erro ao salvar no localStorage:', e);
     }
@@ -656,16 +664,52 @@
       }
     }
 
+    function formatCPF(val) {
+      const digits = val.replace(/\D/g, '').slice(0, 11);
+      if (digits.length <= 3) return digits;
+      if (digits.length <= 6) return `${digits.slice(0, 3)}.${digits.slice(3)}`;
+      if (digits.length <= 9) return `${digits.slice(0, 3)}.${digits.slice(3, 6)}.${digits.slice(6)}`;
+      return `${digits.slice(0, 3)}.${digits.slice(3, 6)}.${digits.slice(6, 9)}-${digits.slice(9, 11)}`;
+    }
+
+    function updateCertDisplays() {
+      const name = (state.studentName || '').trim() || 'Colaborador(a) Exemplar';
+      if (dom.certDisplayName) dom.certDisplayName.textContent = name;
+
+      if (dom.certDisplayCpf) {
+        const cpf = (state.studentCpf || '').trim();
+        if (cpf) {
+          dom.certDisplayCpf.textContent = `CPF: ${cpf}`;
+          dom.certDisplayCpf.style.display = 'block';
+        } else {
+          dom.certDisplayCpf.textContent = '';
+          dom.certDisplayCpf.style.display = 'none';
+        }
+      }
+    }
+
     if (dom.certStudentNameInput && dom.certDisplayName) {
       dom.certStudentNameInput.value = state.studentName;
-      dom.certDisplayName.textContent = state.studentName;
+      if (dom.certStudentCpfInput) {
+        dom.certStudentCpfInput.value = state.studentCpf;
+      }
+      updateCertDisplays();
 
       dom.certStudentNameInput.addEventListener('input', (e) => {
-        const val = e.target.value.trim() || 'Colaborador Exemplar';
-        state.studentName = val;
-        dom.certDisplayName.textContent = val;
+        state.studentName = e.target.value;
+        updateCertDisplays();
         saveProgress();
       });
+
+      if (dom.certStudentCpfInput) {
+        dom.certStudentCpfInput.addEventListener('input', (e) => {
+          const formatted = formatCPF(e.target.value);
+          e.target.value = formatted;
+          state.studentCpf = formatted;
+          updateCertDisplays();
+          saveProgress();
+        });
+      }
     }
   }
 

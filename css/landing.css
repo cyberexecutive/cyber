@@ -600,11 +600,11 @@ body {
 
 /* Oferta & Tabela de Preços */
 .lp-pricing-wrapper {
-  display: grid;
-  grid-template-columns: 1fr 0.9fr;
-  gap: 30px;
-  max-width: 980px;
+  display: flex;
+  justify-content: center;
+  max-width: 540px;
   margin: 0 auto;
+  width: 100%;
 }
 
 .lp-pricing-card {

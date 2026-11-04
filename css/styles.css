@@ -2315,9 +2315,23 @@ body.light-mode .zoomed-subtitle-large {
   padding: 6px 14px;
   border-radius: var(--border-radius-md);
   flex-shrink: 0;
+  flex-wrap: wrap;
 }
 
-.cert-input-row label {
+.cert-input-col {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 2;
+  min-width: 220px;
+}
+
+.cert-input-col-cpf {
+  flex: 1;
+  min-width: 170px;
+}
+
+.cert-input-col label {
   font-size: clamp(0.78rem, 0.88vw, 0.92rem);
   font-weight: 700;
   color: var(--cyan-accent);
@@ -2325,6 +2339,7 @@ body.light-mode .zoomed-subtitle-large {
 }
 
 .cert-name-input {
+  width: 100%;
   flex: 1;
   background: rgba(0, 0, 0, 0.45);
   border: 1px solid rgba(6, 182, 212, 0.3);
@@ -2335,6 +2350,12 @@ body.light-mode .zoomed-subtitle-large {
   font-family: inherit;
   outline: none;
   transition: var(--transition-smooth);
+}
+
+.cert-cpf-input {
+  max-width: 160px;
+  text-align: center;
+  letter-spacing: 0.5px;
 }
 
 .cert-name-input:focus {
@@ -2498,11 +2519,20 @@ body.light-mode .zoomed-subtitle-large {
   font-size: clamp(1.8rem, 3vw, 3.4rem);
   font-weight: 900;
   color: #091e42;
-  margin: 5px 0;
+  margin: 4px 0 2px 0;
   border-bottom: 3px solid #0284c7;
   display: inline-block;
   padding: 0 28px 4px 28px;
   letter-spacing: 0.5px;
+}
+
+.cert-student-cpf-display {
+  font-size: clamp(0.85rem, 1vw, 1.12rem);
+  font-weight: 700;
+  color: #475569;
+  letter-spacing: 1px;
+  margin: 2px 0 6px 0;
+  display: none;
 }
 
 .cert-statement {

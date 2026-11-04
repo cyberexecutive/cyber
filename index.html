@@ -3235,10 +3235,16 @@
          ========================================== -->
     <section class="slide" id="slide-34" data-index="34">
       <div class="cert-slide-content">
-        <!-- Campo para o Aluno Personalizar seu Nome -->
+        <!-- Campo para o Aluno Personalizar seu Nome e CPF -->
         <div class="cert-input-row">
-          <label for="cert-student-name">Nome do Aluno no Certificado:</label>
-          <input type="text" id="cert-student-name" class="cert-name-input" placeholder="Digite seu nome completo aqui..." value="Colaborador Exemplar" />
+          <div class="cert-input-col">
+            <label for="cert-student-name">Nome do Aluno no Certificado:</label>
+            <input type="text" id="cert-student-name" class="cert-name-input" placeholder="Digite seu nome completo aqui..." value="Colaborador(a) Exemplar" />
+          </div>
+          <div class="cert-input-col cert-input-col-cpf">
+            <label for="cert-student-cpf">CPF do Aluno:</label>
+            <input type="text" id="cert-student-cpf" class="cert-name-input cert-cpf-input" placeholder="000.000.000-00" maxlength="14" value="000.000.000-00" />
+          </div>
           <button class="action-pill primary" id="btn-print-certificate" onclick="window.print()">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
             Imprimir / Salvar em PDF
@@ -3290,7 +3296,8 @@
 
           <div class="cert-body">
             <p class="cert-certifies">Certificamos com distinção e reconhecimento profissional que</p>
-            <div class="cert-student-name-display" id="cert-display-name">Colaborador Exemplar</div>
+            <div class="cert-student-name-display" id="cert-display-name">Colaborador(a) Exemplar</div>
+            <div class="cert-student-cpf-display" id="cert-display-cpf"></div>
             <p class="cert-statement">
               concluiu com êxito o treinamento corporativo avançado de <strong>Segurança da Informação e Conscientização Digital</strong>,
               demonstrando proficiência comprovada em defesa contra Engenharia Social, Detecção Ativa de Phishing e Golpes,
