@@ -1463,14 +1463,33 @@
     return result;
   }
 
-  const GESTOR_KEYS = ['GESTOR', 'ADMIN', 'MASTER', 'CYBERMASTER', 'CYBER-MASTER', 'GESTAO', 'DIRETORIA', 'PROFESSOR', 'SUPERADMIN'];
+  const GESTOR_KEYS = [
+    'GESTOR',
+    'ADMIN',
+    'MASTER',
+    'CYBERMASTER',
+    'CYBER-MASTER',
+    'GESTAO',
+    'DIRETORIA',
+    'PROFESSOR',
+    'SUPERADMIN',
+    'CYBER-EXEC-8492-PRO',
+    'CYBEREXEC8492PRO'
+  ];
+
+  function isGestorKey(inputKey) {
+    if (!inputKey || typeof inputKey !== 'string') return false;
+    const cleanKey = inputKey.trim().toUpperCase();
+    const cleanNoSep = cleanKey.replace(/[\s\-_]/g, '');
+    return GESTOR_KEYS.some(k => k === cleanKey || k.replace(/[\s\-_]/g, '') === cleanNoSep);
+  }
 
   function isKeyValid(inputKey) {
     if (!inputKey || typeof inputKey !== 'string') return false;
     const cleanKey = inputKey.trim().toUpperCase();
     if (!cleanKey) return false;
 
-    if (GESTOR_KEYS.includes(cleanKey)) return true;
+    if (isGestorKey(cleanKey)) return true;
 
     const hashRaw = sha256(cleanKey);
     const hashNoSeparators = sha256(cleanKey.replace(/[\s\-_]/g, ''));
@@ -1506,8 +1525,8 @@
       }
 
       if (accessParam && isKeyValid(accessParam)) {
-        const isMaster = GESTOR_KEYS.includes(accessParam.toUpperCase());
-        unlockCourse(true, isMaster ? '👑 Modo Gestor Ativado! Todos os 34 slides e módulos liberados.' : '🎉 Acesso Completo Ativado via Link! Bem-vindo(a) ao treinamento.', isMaster);
+        const isMaster = isGestorKey(accessParam);
+        unlockCourse(true, isMaster ? '👑 Modo Gestor Ativado! Todos os 34 slides e módulos liberados sem restrições.' : '🎉 Acesso Completo Ativado via Link! Bem-vindo(a) ao treinamento.', isMaster);
         return;
       }
 
@@ -1518,6 +1537,7 @@
         state.isUnlocked = true;
         if (savedRole === 'gestor') {
           state.isGestor = true;
+          state.isStudentRegistered = true;
         }
         updateUnlockUI();
       } else {
@@ -1532,11 +1552,15 @@
 
   function unlockCourse(showFeedbackToast = true, toastMessage = '🎉 Parabéns! Acesso completo liberado com sucesso.', asGestor = false) {
     state.isUnlocked = true;
-    if (asGestor) state.isGestor = true;
+    if (asGestor) {
+      state.isGestor = true;
+      state.isStudentRegistered = true;
+    }
     try {
       localStorage.setItem('cybersec_course_unlocked', 'true');
       if (state.isGestor) {
         localStorage.setItem('cybersec_user_role', 'gestor');
+        localStorage.setItem('cybersec_student_registered', 'true');
       }
     } catch (e) {}
 
@@ -1550,6 +1574,9 @@
 
     closePaywallModal();
     closeUnlockModal();
+    if (typeof closeStudentIdModal === 'function') {
+      closeStudentIdModal();
+    }
 
     if (state.intendedSlide) {
       const target = state.intendedSlide;
@@ -1656,7 +1683,7 @@
     }
 
     if (isKeyValid(rawKey)) {
-      const isMaster = GESTOR_KEYS.includes(rawKey.toUpperCase());
+      const isMaster = isGestorKey(rawKey);
       if (dom.unlockStatusMsg) {
         dom.unlockStatusMsg.textContent = isMaster ? '👑 Chave de Gestor confirmada! Liberando todos os slides...' : '✓ Chave validada! Liberando acesso...';
         dom.unlockStatusMsg.className = 'unlock-status-msg success';
