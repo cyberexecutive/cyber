@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Capacitação Executiva em Segurança da Informação e Conscientização Digital</title>
   <meta name="description" content="Capacitação Executiva em Segurança da Informação e Conscientização Digital. Treinamento corporativo 100% interativo com certificação oficial.">
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/styles.css?v=3.0">
 </head>
 <body>
 
@@ -173,8 +173,22 @@
             <span><strong>Dica de Navegação:</strong> Use as setas do teclado <strong>← →</strong> para navegar, <strong>M</strong> para abrir a trilha de aulas e clique nos cards e ilustrações para <strong>ampliar</strong> em tela cheia.</span>
           </div>
 
+          <!-- Observação de Tela Cheia para Melhor Visualização -->
+          <div class="fullscreen-notice-banner">
+            <div class="fs-banner-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+            </div>
+            <div class="fs-banner-text">
+              <strong>Visualização Otimizada:</strong> Abra o treinamento em <strong>Tela Cheia</strong> para melhor leitura e proporção dos slides. Pressione <strong>F</strong> ou clique ao lado.
+            </div>
+            <button class="action-pill fs-action-btn" id="btn-fs-prompt" onclick="window.PresentationApp.toggleFullscreen()">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+              <span id="btn-fs-prompt-text">Abrir em Tela Cheia (F)</span>
+            </button>
+          </div>
+
           <div style="margin-top: clamp(8px, 1.4vh, 16px); display: flex; gap: 12px; align-items: center;">
-            <button class="action-pill primary" id="btn-start-course" onclick="window.PresentationApp.goToSlide(2)">
+            <button class="action-pill primary" id="btn-start-course" onclick="window.PresentationApp.startCourse()">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
               Iniciar Treinamento
             </button>
@@ -3232,20 +3246,31 @@
          ========================================== -->
     <section class="slide" id="slide-34" data-index="34">
       <div class="cert-slide-content">
-        <!-- Campo para o Aluno Personalizar seu Nome e CPF -->
-        <div class="cert-input-row">
-          <div class="cert-input-col">
-            <label for="cert-student-name">Nome do Aluno no Certificado:</label>
-            <input type="text" id="cert-student-name" class="cert-name-input" placeholder="Digite seu nome completo aqui..." value="Colaborador(a) Exemplar" />
+        <!-- Barra com Dados Oficiais do Aluno Registrado -->
+        <div class="cert-registered-bar">
+          <div class="cert-student-profile-badge">
+            <div class="cert-profile-avatar">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <div class="cert-profile-info">
+              <span class="cert-profile-label">Titular do Certificado Oficial:</span>
+              <div class="cert-profile-data">
+                <strong class="cert-profile-name" id="cert-bar-student-name">Colaborador(a) Exemplar</strong>
+                <span class="cert-profile-dot">•</span>
+                <span class="cert-profile-cpf" id="cert-bar-student-cpf">CPF: 000.000.000-00</span>
+              </div>
+            </div>
           </div>
-          <div class="cert-input-col cert-input-col-cpf">
-            <label for="cert-student-cpf">CPF do Aluno:</label>
-            <input type="text" id="cert-student-cpf" class="cert-name-input cert-cpf-input" placeholder="000.000.000-00" maxlength="14" value="000.000.000-00" />
+
+          <div class="cert-status-actions">
+            <div class="cert-edition-status" id="cert-edition-status">
+              <span class="cert-edition-pill" id="cert-edition-pill">1ª VIA ORIGINAL</span>
+            </div>
+            <button class="action-pill primary btn-print-cert" id="btn-print-certificate" onclick="window.PresentationApp.printCertificate()">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+              <span id="btn-print-label">Imprimir / Salvar em PDF</span>
+            </button>
           </div>
-          <button class="action-pill primary" id="btn-print-certificate" onclick="window.print()">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-            Imprimir / Salvar em PDF
-          </button>
         </div>
 
         <!-- O Certificado Formal de Cibersegurança -->
@@ -3255,6 +3280,14 @@
           <div class="cert-corner-bracket cert-corner-tr" aria-hidden="true"></div>
           <div class="cert-corner-bracket cert-corner-bl" aria-hidden="true"></div>
           <div class="cert-corner-bracket cert-corner-br" aria-hidden="true"></div>
+
+          <!-- Selo e Marca d'Água de 2ª Via (Exibidos apenas após a 1ª emissão) -->
+          <div class="cert-second-copy-badge" id="cert-second-copy-badge" style="display: none;">
+            ★ SEGUNDA VIA OFICIAL ★
+          </div>
+          <div class="cert-second-copy-watermark" id="cert-second-copy-watermark" style="display: none;">
+            2ª VIA OFICIAL
+          </div>
 
           <!-- Marca D'água Tecnológica de Fundo (Cyber Shield & Circuits) -->
           <div class="cert-tech-watermark" aria-hidden="true">
@@ -3352,6 +3385,9 @@
               <div class="cert-signature-name">Claudinei Gonçalves de Lima</div>
               <div class="cert-signature-role">Information Technology Management | Senior IT Technician - CEO</div>
               <div class="cert-code-tag" id="cert-auth-code">SEC-2026-8942-BR</div>
+              <div class="cert-second-copy-note" id="cert-second-copy-note" style="display: none;">
+                1ª Emissão Original em <span id="cert-orig-date">--</span> • Via registrada pelo titular acadêmico.
+              </div>
             </div>
           </div>
         </div>
@@ -3570,9 +3606,46 @@
     </div>
   </div>
 
+  <!-- Modal de Identificação Obrigatória do Aluno -->
+  <div class="modal-overlay" id="student-id-modal" aria-hidden="true">
+    <div class="overview-content student-id-card">
+      <div class="student-id-header">
+        <div class="student-id-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <h3 class="student-id-title">Identificação Oficial do Aluno</h3>
+        <p class="student-id-subtitle">
+          Informe seu <strong>Nome Completo</strong> e <strong>CPF</strong> para registro acadêmico e personalização automática do seu Certificado Executivo Oficial.
+        </p>
+      </div>
+
+      <form id="student-id-form" onsubmit="event.preventDefault(); window.PresentationApp.submitStudentRegistration();" class="student-id-form">
+        <div class="student-id-field">
+          <label for="input-reg-name">Nome Completo do Aluno *</label>
+          <input type="text" id="input-reg-name" class="student-id-input" placeholder="Ex: Maria Fernandes da Silva" required autocomplete="name" />
+          <span class="field-hint">Nome que constará oficialmente no seu Certificado de Conclusão.</span>
+        </div>
+
+        <div class="student-id-field">
+          <label for="input-reg-cpf">CPF do Aluno *</label>
+          <input type="text" id="input-reg-cpf" class="student-id-input" placeholder="000.000.000-00" maxlength="14" required autocomplete="off" />
+          <span class="field-hint">Registro acadêmico oficial para autenticidade e validação antifraude.</span>
+        </div>
+
+        <div class="student-id-error-msg" id="student-id-error-msg"></div>
+
+        <div class="student-id-actions">
+          <button type="submit" class="action-pill primary btn-confirm-reg">
+            Salvar Dados e Iniciar Treinamento →
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- Toast Flutuante de Notificação -->
   <div id="course-toast" class="course-toast" aria-live="polite"></div>
 
-  <script src="js/presentation.js"></script>
+  <script src="js/presentation.js?v=3.0"></script>
 </body>
 </html>

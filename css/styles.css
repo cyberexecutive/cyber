@@ -3189,6 +3189,375 @@ body.light-mode .zoomed-subtitle-large {
 }
 
 /* -------------------------------------------------------------
+   Banner de Observação de Tela Cheia (Slide 1)
+   ------------------------------------------------------------- */
+.fullscreen-notice-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.08) 0%, rgba(59, 130, 246, 0.05) 100%);
+  border: 1px solid rgba(6, 182, 212, 0.35);
+  border-radius: var(--border-radius-md);
+  padding: clamp(8px, 1.1vh, 12px) clamp(12px, 1.4vw, 18px);
+  margin-top: clamp(8px, 1.2vh, 14px);
+  animation: fadeIn 0.4s ease forwards;
+}
+
+.fs-banner-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: rgba(6, 182, 212, 0.15);
+  color: #38bdf8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.fs-banner-text {
+  flex: 1;
+  font-size: clamp(0.78rem, 0.88vw, 0.88rem);
+  color: var(--text-main);
+  line-height: 1.4;
+}
+
+.fs-banner-text strong {
+  color: #38bdf8;
+}
+
+.fs-action-btn {
+  background: rgba(6, 182, 212, 0.15) !important;
+  color: #38bdf8 !important;
+  border: 1px solid rgba(6, 182, 212, 0.4) !important;
+  white-space: nowrap;
+  font-weight: 600;
+  border-radius: 9999px !important;
+  transition: all 0.2s ease;
+  font-size: 0.82rem !important;
+}
+
+.fs-action-btn:hover {
+  background: rgba(6, 182, 212, 0.25) !important;
+  border-color: #38bdf8 !important;
+  transform: translateY(-1px);
+}
+
+.fs-action-btn.fs-active {
+  background: rgba(16, 185, 129, 0.15) !important;
+  border-color: rgba(16, 185, 129, 0.4) !important;
+  color: #34d399 !important;
+}
+
+/* -------------------------------------------------------------
+   Modal de Identificação Obrigatória do Aluno
+   ------------------------------------------------------------- */
+.student-id-card {
+  max-width: 520px;
+  width: 92%;
+  background: var(--bg-card, #0f172a);
+  border: 1px solid rgba(6, 182, 212, 0.35);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 35px rgba(6, 182, 212, 0.2);
+  border-radius: var(--border-radius-lg);
+  padding: clamp(20px, 3vh, 32px);
+  text-align: left;
+  animation: modalScaleUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.student-id-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.student-id-icon {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(59, 130, 246, 0.2));
+  border: 1px solid rgba(6, 182, 212, 0.4);
+  color: #38bdf8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 12px;
+}
+
+.student-id-title {
+  font-size: clamp(1.2rem, 1.4vw, 1.45rem);
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0 0 6px;
+  letter-spacing: -0.02em;
+}
+
+.student-id-subtitle {
+  font-size: clamp(0.82rem, 0.9vw, 0.92rem);
+  color: var(--text-muted, #94a3b8);
+  line-height: 1.45;
+  margin: 0;
+}
+
+.student-id-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.student-id-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.student-id-field label {
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: #e2e8f0;
+  display: flex;
+  justify-content: space-between;
+}
+
+.student-id-input {
+  width: 100%;
+  background: rgba(15, 23, 42, 0.7);
+  border: 1.5px solid rgba(148, 163, 184, 0.25);
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-size: 0.95rem;
+  color: #ffffff;
+  outline: none;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.student-id-input:focus {
+  border-color: #38bdf8;
+  background: rgba(15, 23, 42, 0.95);
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
+}
+
+.student-id-field .field-hint {
+  font-size: 0.74rem;
+  color: var(--text-muted, #64748b);
+}
+
+.student-id-error-msg {
+  display: none;
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: #f87171;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.student-id-error-msg.show {
+  display: block;
+}
+
+.student-id-actions {
+  margin-top: 6px;
+}
+
+.btn-confirm-reg {
+  width: 100%;
+  padding: 14px !important;
+  justify-content: center;
+  font-size: 0.98rem !important;
+  font-weight: 700 !important;
+  border-radius: 9999px !important;
+}
+
+/* -------------------------------------------------------------
+   Barra de Aluno Cadastrado (Slide 34)
+   ------------------------------------------------------------- */
+.cert-registered-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  border-radius: var(--border-radius-md);
+  padding: clamp(8px, 1.2vh, 12px) clamp(14px, 1.6vw, 22px);
+  margin-bottom: clamp(6px, 1vh, 12px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+.cert-student-profile-badge {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cert-profile-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0284c7, #06b6d4);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.cert-profile-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.cert-profile-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted, #94a3b8);
+  font-weight: 700;
+}
+
+.cert-profile-data {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.cert-profile-name {
+  font-size: clamp(0.95rem, 1.1vw, 1.15rem);
+  font-weight: 800;
+  color: #38bdf8;
+}
+
+.cert-profile-dot {
+  color: #64748b;
+  font-size: 0.8rem;
+}
+
+.cert-profile-cpf {
+  font-size: clamp(0.8rem, 0.9vw, 0.92rem);
+  font-weight: 600;
+  color: #cbd5e1;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 1px 8px;
+  border-radius: 4px;
+}
+
+.cert-status-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cert-edition-pill {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  padding: 5px 12px;
+  border-radius: 9999px;
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.cert-edition-pill.second-copy {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border-color: rgba(245, 158, 11, 0.4);
+}
+
+.btn-print-cert {
+  border-radius: 9999px !important;
+  font-weight: 700 !important;
+  padding: 10px 20px !important;
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35) !important;
+}
+
+/* -------------------------------------------------------------
+   Elementos de 2ª Via no Certificado
+   ------------------------------------------------------------- */
+.cert-second-copy-badge {
+  display: none;
+  position: absolute;
+  top: 14px;
+  right: 48px;
+  background: linear-gradient(135deg, #b45309, #d97706);
+  color: #ffffff;
+  font-size: clamp(0.68rem, 0.8vw, 0.78rem);
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  padding: 3px 12px;
+  border-radius: 4px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+  z-index: 5;
+  text-transform: uppercase;
+}
+
+.cert-second-copy-watermark {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-25deg);
+  font-size: clamp(2.5rem, 5.5vw, 5rem);
+  font-weight: 900;
+  letter-spacing: 0.15em;
+  color: rgba(180, 83, 9, 0.12);
+  border: 6px dashed rgba(180, 83, 9, 0.2);
+  padding: 8px 30px;
+  border-radius: 12px;
+  pointer-events: none;
+  z-index: 3;
+  user-select: none;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.cert-second-copy-note {
+  font-size: 0.72rem;
+  color: #64748b;
+  font-style: italic;
+  margin-top: 6px;
+  text-align: center;
+}
+
+/* Animação Shake para Travamento de Quiz */
+@keyframes shakeQuiz {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-8px); }
+  40%, 80% { transform: translateX(8px); }
+}
+
+.shake-anim {
+  animation: shakeQuiz 0.5s ease-in-out;
+  box-shadow: 0 0 25px rgba(239, 68, 68, 0.5) !important;
+  border-color: #ef4444 !important;
+}
+
+/* Oculta botão de próxima aula quando resposta for errada */
+.quiz-feedback-box.wrong .quiz-feedback-actions .action-pill.primary {
+  display: none !important;
+}
+
+.quiz-feedback-box.wrong .quiz-feedback-actions .action-pill {
+  background: rgba(239, 68, 68, 0.18) !important;
+  border: 1px solid rgba(239, 68, 68, 0.5) !important;
+  color: #fca5a5 !important;
+  font-weight: 700;
+}
+
+.quiz-feedback-box.wrong .quiz-feedback-actions .action-pill:hover {
+  background: rgba(239, 68, 68, 0.3) !important;
+  color: #ffffff !important;
+}
+
+/* -------------------------------------------------------------
    Estilo de Impressão Especializada (Certificado em PDF)
    ------------------------------------------------------------- */
 @media print {
@@ -3203,7 +3572,7 @@ body.light-mode .zoomed-subtitle-large {
     height: 100% !important;
     overflow: visible !important;
   }
-  #top-progress-bar, .top-header, .bottom-dock, .modal-overlay, .card-modal-overlay, #modules-drawer, .cert-input-row, .cert-actions-bar {
+  #top-progress-bar, .top-header, .bottom-dock, .modal-overlay, .card-modal-overlay, #modules-drawer, .cert-input-row, .cert-registered-bar, .cert-actions-bar, .fullscreen-notice-banner {
     display: none !important;
   }
   #presentation-viewport {
@@ -3235,5 +3604,18 @@ body.light-mode .zoomed-subtitle-large {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
+  .cert-second-copy-watermark {
+    color: rgba(180, 83, 9, 0.18) !important;
+    border-color: rgba(180, 83, 9, 0.25) !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  .cert-second-copy-badge {
+    background: #b45309 !important;
+    color: #ffffff !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
 }
 

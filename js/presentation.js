@@ -125,6 +125,10 @@
     isUnlockModalOpen: false,
     toastTimer: null,
     quizzes: {},
+    isStudentRegistered: false,
+    isStudentIdModalOpen: false,
+    certIssued: false,
+    certFirstIssueDate: '',
     studentName: 'Colaborador(a) Exemplar',
     studentCpf: '000.000.000-00',
     touchStartX: 0,
@@ -187,6 +191,169 @@
   /**
    * Inicialização
    */
+  /**
+   * Inicia o treinamento no Slide 1: exige cadastro de Nome e CPF se ainda não realizado
+   */
+  function startCourse() {
+    if (!state.isStudentRegistered && !state.isGestor) {
+      openStudentIdModal();
+    } else {
+      goToSlide(2);
+    }
+  }
+
+  /**
+   * Abre o modal de identificação cadastral do aluno
+   */
+  function openStudentIdModal() {
+    const modal = document.getElementById('student-id-modal');
+    if (!modal) return;
+
+    const inputName = document.getElementById('input-reg-name');
+    const inputCpf = document.getElementById('input-reg-cpf');
+    const errorMsg = document.getElementById('student-id-error-msg');
+
+    if (errorMsg) {
+      errorMsg.textContent = '';
+      errorMsg.classList.remove('show');
+    }
+
+    if (inputName && state.studentName && state.isStudentRegistered) {
+      inputName.value = state.studentName;
+    }
+    if (inputCpf && state.studentCpf && state.isStudentRegistered) {
+      inputCpf.value = state.studentCpf;
+    }
+
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden', 'false');
+    state.isStudentIdModalOpen = true;
+
+    setTimeout(() => {
+      if (inputName) inputName.focus();
+    }, 150);
+  }
+
+  /**
+   * Fecha o modal de identificação cadastral do aluno
+   */
+  function closeStudentIdModal() {
+    const modal = document.getElementById('student-id-modal');
+    if (!modal) return;
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden', 'true');
+    state.isStudentIdModalOpen = false;
+  }
+
+  /**
+   * Configura eventos do modal de identificação (máscara de CPF e clique fora)
+   */
+  function setupStudentIdModal() {
+    const inputCpf = document.getElementById('input-reg-cpf');
+    if (inputCpf) {
+      inputCpf.addEventListener('input', (e) => {
+        let v = e.target.value.replace(/\D/g, '').slice(0, 11);
+        if (v.length > 9) {
+          v = `${v.slice(0, 3)}.${v.slice(3, 6)}.${v.slice(6, 9)}-${v.slice(9)}`;
+        } else if (v.length > 6) {
+          v = `${v.slice(0, 3)}.${v.slice(3, 6)}.${v.slice(6)}`;
+        } else if (v.length > 3) {
+          v = `${v.slice(0, 3)}.${v.slice(3)}`;
+        }
+        e.target.value = v;
+      });
+    }
+
+    const modal = document.getElementById('student-id-modal');
+    if (modal) {
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          if (!state.isStudentRegistered && !state.isGestor) {
+            showToast('⚠️ É obrigatório preencher seu Nome Completo e CPF para iniciar o treinamento.', 3500);
+          } else {
+            closeStudentIdModal();
+          }
+        }
+      });
+    }
+  }
+
+  /**
+   * Valida e salva o cadastro obrigatório do aluno
+   */
+  function submitStudentRegistration() {
+    const inputName = document.getElementById('input-reg-name');
+    const inputCpf = document.getElementById('input-reg-cpf');
+    const errorMsg = document.getElementById('student-id-error-msg');
+
+    const nameVal = inputName ? inputName.value.trim() : '';
+    const cpfVal = inputCpf ? inputCpf.value.trim() : '';
+
+    const words = nameVal.split(/\s+/).filter(w => w.length > 0);
+    if (words.length < 2 || nameVal.length < 5) {
+      if (errorMsg) {
+        errorMsg.textContent = 'Por favor, informe seu nome completo (nome e sobrenome) para o certificado.';
+        errorMsg.classList.add('show');
+      }
+      if (inputName) inputName.focus();
+      return;
+    }
+
+    const rawDigits = cpfVal.replace(/\D/g, '');
+    if (rawDigits.length !== 11) {
+      if (errorMsg) {
+        errorMsg.textContent = 'Por favor, informe um CPF válido com 11 dígitos (000.000.000-00).';
+        errorMsg.classList.add('show');
+      }
+      if (inputCpf) inputCpf.focus();
+      return;
+    }
+
+    const formattedName = words.map(w => {
+      const lower = w.toLowerCase();
+      if (['da', 'de', 'do', 'das', 'dos', 'e'].includes(lower)) return lower;
+      return lower.charAt(0).toUpperCase() + lower.slice(1);
+    }).join(' ');
+
+    const formattedCpf = formatCPF(rawDigits);
+
+    state.studentName = formattedName;
+    state.studentCpf = formattedCpf;
+    state.isStudentRegistered = true;
+
+    saveProgress();
+    updateCertDisplays();
+    closeStudentIdModal();
+
+    showToast(`✅ Identificação confirmada! Bem-vindo(a), ${words[0]}!`, 3500);
+
+    if (state.currentSlide === 1) {
+      goToSlide(2);
+    }
+  }
+
+  /**
+   * Atualiza interface do botão de Tela Cheia no Banner do Slide 1
+   */
+  function updateFullscreenUI() {
+    const btnLabel = document.getElementById('btn-fs-prompt-text');
+    const btn = document.getElementById('btn-fs-prompt');
+    if (btnLabel && btn) {
+      if (state.isFullscreen) {
+        btnLabel.textContent = '✓ Tela Cheia Ativa';
+        btn.classList.add('fs-active');
+      } else {
+        btnLabel.textContent = 'Abrir em Tela Cheia (F)';
+        btn.classList.remove('fs-active');
+      }
+    }
+  }
+
+  document.addEventListener('fullscreenchange', () => {
+    state.isFullscreen = !!document.fullscreenElement;
+    updateFullscreenUI();
+  });
+
   function init() {
     state.totalSlides = dom.slides.length || 34;
     if (dom.totalNum) dom.totalNum.textContent = String(state.totalSlides).padStart(2, '0');
@@ -202,6 +369,7 @@
     setupImageHandlers();
     setupCardZoom();
     setupQuizzes();
+    setupStudentIdModal();
     setupCertificate();
     renderModulesDrawer();
     updateDashboardStats();
@@ -226,12 +394,25 @@
       const savedQuizzes = localStorage.getItem('cybersec_quizzes');
       if (savedQuizzes) state.quizzes = JSON.parse(savedQuizzes);
 
+      const savedReg = localStorage.getItem('cybersec_student_registered');
+      if (savedReg === 'true') {
+        state.isStudentRegistered = true;
+      }
+
       const savedName = localStorage.getItem('cybersec_student_name');
       if (savedName && !savedName.toLowerCase().includes('claudinei')) {
         state.studentName = savedName;
       }
       const savedCpf = localStorage.getItem('cybersec_student_cpf');
-      if (savedCpf) state.studentCpf = savedCpf;
+      if (savedCpf) {
+        state.studentCpf = savedCpf;
+      }
+
+      const certIssued = localStorage.getItem('cybersec_cert_issued');
+      if (certIssued === 'true') {
+        state.certIssued = true;
+        state.certFirstIssueDate = localStorage.getItem('cybersec_cert_first_date') || '';
+      }
     } catch (e) {
       console.warn('Não foi possível acessar localStorage:', e);
     }
@@ -245,6 +426,7 @@
       localStorage.setItem('cybersec_quizzes', JSON.stringify(state.quizzes));
       localStorage.setItem('cybersec_student_name', state.studentName);
       localStorage.setItem('cybersec_student_cpf', state.studentCpf || '');
+      localStorage.setItem('cybersec_student_registered', state.isStudentRegistered ? 'true' : 'false');
     } catch (e) {
       console.warn('Erro ao salvar no localStorage:', e);
     }
@@ -650,10 +832,139 @@
   }
 
   /**
+   * Formata dígitos numéricos no padrão CPF (000.000.000-00)
+   */
+  function formatCPF(val) {
+    const digits = (val || '').replace(/\D/g, '').slice(0, 11);
+    if (digits.length <= 3) return digits;
+    if (digits.length <= 6) return `${digits.slice(0, 3)}.${digits.slice(3)}`;
+    if (digits.length <= 9) return `${digits.slice(0, 3)}.${digits.slice(3, 6)}.${digits.slice(6)}`;
+    return `${digits.slice(0, 3)}.${digits.slice(3, 6)}.${digits.slice(6, 9)}-${digits.slice(9, 11)}`;
+  }
+
+  /**
+   * Gera código único de autenticidade criptográfica para o Certificado
+   */
+  function generateStudentAuthCode(name, cpf) {
+    const cleanName = (name || '').trim().toUpperCase();
+    const cleanCpf = (cpf || '').replace(/\D/g, '');
+    const seed = `${cleanName || 'ALUNO'}|${cleanCpf || '00000000000'}|CYBER-EXEC-2026-AUTH`;
+    const hash = sha256(seed).toUpperCase();
+    return `SEC-2026-${hash.slice(0, 4)}-${hash.slice(4, 8)}`;
+  }
+
+  /**
+   * Atualiza os dados textuais do aluno no certificado e na barra oficial
+   */
+  function updateCertDisplays() {
+    const name = (state.studentName || '').trim() || 'Colaborador(a) Exemplar';
+    const cpf = (state.studentCpf || '').trim() || '000.000.000-00';
+
+    const certDisplayName = document.getElementById('cert-display-name');
+    const certDisplayCpf = document.getElementById('cert-display-cpf');
+    const barName = document.getElementById('cert-bar-student-name');
+    const barCpf = document.getElementById('cert-bar-student-cpf');
+    const certAuthCode = document.getElementById('cert-auth-code');
+
+    if (certDisplayName) certDisplayName.textContent = name;
+    if (certDisplayCpf) {
+      certDisplayCpf.textContent = `CPF: ${cpf}`;
+      certDisplayCpf.style.display = 'block';
+    }
+
+    if (barName) barName.textContent = name;
+    if (barCpf) barCpf.textContent = `CPF: ${cpf}`;
+
+    if (certAuthCode) {
+      certAuthCode.textContent = generateStudentAuthCode(name, cpf);
+    }
+
+    updateCertificateSecondCopyUI();
+  }
+
+  /**
+   * Atualiza os selos, marca d'água e rótulos de 1ª Via vs 2ª Via
+   */
+  function updateCertificateSecondCopyUI(forceSecondCopy) {
+    const isSecond = forceSecondCopy !== undefined ? forceSecondCopy : state.certIssued;
+    const badge = document.getElementById('cert-second-copy-badge');
+    const watermark = document.getElementById('cert-second-copy-watermark');
+    const note = document.getElementById('cert-second-copy-note');
+    const origDateSpan = document.getElementById('cert-orig-date');
+    const pill = document.getElementById('cert-edition-pill');
+    const btnLabel = document.getElementById('btn-print-label');
+
+    if (isSecond) {
+      if (badge) badge.style.display = 'inline-block';
+      if (watermark) watermark.style.display = 'block';
+      if (note) {
+        note.style.display = 'block';
+        if (origDateSpan && state.certFirstIssueDate) {
+          try {
+            const d = new Date(state.certFirstIssueDate);
+            const months = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+            origDateSpan.textContent = `${String(d.getDate()).padStart(2, '0')}/${months[d.getMonth()]}/${d.getFullYear()} às ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+          } catch (e) {
+            origDateSpan.textContent = state.certFirstIssueDate;
+          }
+        }
+      }
+      if (pill) {
+        pill.textContent = '2ª VIA REGISTRADA';
+        pill.classList.add('second-copy');
+      }
+      if (btnLabel) {
+        btnLabel.textContent = 'Imprimir 2ª Via Oficial';
+      }
+    } else {
+      if (badge) badge.style.display = 'none';
+      if (watermark) watermark.style.display = 'none';
+      if (note) note.style.display = 'none';
+      if (pill) {
+        pill.textContent = '1ª VIA ORIGINAL';
+        pill.classList.remove('second-copy');
+      }
+      if (btnLabel) {
+        btnLabel.textContent = 'Imprimir / Salvar em PDF';
+      }
+    }
+  }
+
+  /**
+   * Executa a impressão e controle de 1ª Via / 2ª Via do Certificado
+   */
+  function printCertificate() {
+    if (!state.certIssued) {
+      // 1ª Emissão Oficial
+      state.certIssued = true;
+      const nowIso = new Date().toISOString();
+      state.certFirstIssueDate = nowIso;
+      try {
+        localStorage.setItem('cybersec_cert_issued', 'true');
+        localStorage.setItem('cybersec_cert_first_date', nowIso);
+      } catch (e) {}
+
+      // Imprime 1ª via original limpa
+      updateCertificateSecondCopyUI(false);
+      window.print();
+
+      // Após a impressão, a interface transita para 2ª via permanente
+      setTimeout(() => {
+        updateCertificateSecondCopyUI(true);
+        showToast('✅ Certificado emitido com sucesso! Emissões subsequentes serão registradas como 2ª Via Oficial.', 5000);
+      }, 1000);
+    } else {
+      // 2ª Via Oficial
+      updateCertificateSecondCopyUI(true);
+      showToast('📄 Imprimindo 2ª Via Oficial do seu Certificado registrado...', 3500);
+      window.print();
+    }
+  }
+
+  /**
    * Configuração do Certificado (Slide 34)
    */
   function setupCertificate() {
-    // Configura data atual de conclusão formatada em português
     const certDateElem = document.getElementById('cert-date-display');
     if (certDateElem) {
       try {
@@ -666,65 +977,7 @@
       }
     }
 
-    function formatCPF(val) {
-      const digits = val.replace(/\D/g, '').slice(0, 11);
-      if (digits.length <= 3) return digits;
-      if (digits.length <= 6) return `${digits.slice(0, 3)}.${digits.slice(3)}`;
-      if (digits.length <= 9) return `${digits.slice(0, 3)}.${digits.slice(3, 6)}.${digits.slice(6)}`;
-      return `${digits.slice(0, 3)}.${digits.slice(3, 6)}.${digits.slice(6, 9)}-${digits.slice(9, 11)}`;
-    }
-
-    function generateStudentAuthCode(name, cpf) {
-      const cleanName = (name || '').trim().toUpperCase();
-      const cleanCpf = (cpf || '').replace(/\D/g, '');
-      const seed = `${cleanName || 'ALUNO'}|${cleanCpf || '00000000000'}|CYBER-EXEC-2026-AUTH`;
-      const hash = sha256(seed).toUpperCase();
-      return `SEC-2026-${hash.slice(0, 4)}-${hash.slice(4, 8)}`;
-    }
-
-    function updateCertDisplays() {
-      const name = (state.studentName || '').trim() || 'Colaborador(a) Exemplar';
-      if (dom.certDisplayName) dom.certDisplayName.textContent = name;
-
-      if (dom.certDisplayCpf) {
-        const cpf = (state.studentCpf || '').trim();
-        if (cpf) {
-          dom.certDisplayCpf.textContent = `CPF: ${cpf}`;
-          dom.certDisplayCpf.style.display = 'block';
-        } else {
-          dom.certDisplayCpf.textContent = '';
-          dom.certDisplayCpf.style.display = 'none';
-        }
-      }
-
-      if (dom.certAuthCode) {
-        dom.certAuthCode.textContent = generateStudentAuthCode(state.studentName, state.studentCpf);
-      }
-    }
-
-    if (dom.certStudentNameInput && dom.certDisplayName) {
-      dom.certStudentNameInput.value = state.studentName;
-      if (dom.certStudentCpfInput) {
-        dom.certStudentCpfInput.value = state.studentCpf;
-      }
-      updateCertDisplays();
-
-      dom.certStudentNameInput.addEventListener('input', (e) => {
-        state.studentName = e.target.value;
-        updateCertDisplays();
-        saveProgress();
-      });
-
-      if (dom.certStudentCpfInput) {
-        dom.certStudentCpfInput.addEventListener('input', (e) => {
-          const formatted = formatCPF(e.target.value);
-          e.target.value = formatted;
-          state.studentCpf = formatted;
-          updateCertDisplays();
-          saveProgress();
-        });
-      }
-    }
+    updateCertDisplays();
   }
 
   /**
@@ -991,13 +1244,55 @@
     if (slideNum < 1) slideNum = 1;
     if (slideNum > state.totalSlides) slideNum = state.totalSlides;
 
-    // Trava de Demonstração / Paywall nos Módulos 03 a 11
+    // 1. Trava de Cadastro Inicial do Aluno (Nome Completo e CPF obrigatórios para iniciar)
+    if (slideNum > 1 && !state.isStudentRegistered && !state.isGestor) {
+      openStudentIdModal();
+      showToast('⚠️ Preencha seu Nome Completo e CPF para iniciar o treinamento.', 4000);
+      return;
+    }
+
+    // 2. Trava de Demonstração / Paywall nos Módulos 03 a 11
     if (!state.isUnlocked && slideNum > state.maxDemoSlide) {
       openPaywallModal(slideNum);
       if (state.currentSlide > state.maxDemoSlide) {
         slideNum = 1;
       } else {
         return;
+      }
+    }
+
+    // 3. Trava de Atividades Obrigatórias: não permite avançar sem acertar a atividade do módulo
+    if (!state.isGestor && slideNum > state.currentSlide) {
+      // 3a. Se o slide atual for uma atividade/quiz, exige acerto antes de sair
+      const currentMod = modulesMeta.find(m => m.quizSlide === state.currentSlide);
+      if (currentMod) {
+        const isCurrentQuizCorrect = state.quizzes[currentMod.id] && state.quizzes[currentMod.id].correct === true;
+        if (!isCurrentQuizCorrect) {
+          showToast(`⚠️ Você precisa acertar o Desafio Prático do Módulo ${currentMod.num} antes de avançar! Clique em "Refazer Questão" para tentar novamente.`, 4500);
+          const qContainer = document.querySelector(`.quiz-container[data-quiz-id="${currentMod.id}"]`);
+          if (qContainer) {
+            qContainer.classList.add('shake-anim');
+            setTimeout(() => qContainer.classList.remove('shake-anim'), 600);
+          }
+          return;
+        }
+      }
+
+      // 3b. Se estiver pulando slides, verifica se há atividades anteriores incompletas ou erradas
+      const pendingMod = modulesMeta.find(m => m.quizSlide && m.quizSlide < slideNum && !(state.quizzes[m.id] && state.quizzes[m.id].correct));
+      if (pendingMod) {
+        if (state.currentSlide === pendingMod.quizSlide) {
+          showToast(`⚠️ Você precisa acertar o Desafio Prático do Módulo ${pendingMod.num} antes de avançar! Clique em "Refazer Questão" para tentar novamente.`, 4500);
+          const qContainer = document.querySelector(`.quiz-container[data-quiz-id="${pendingMod.id}"]`);
+          if (qContainer) {
+            qContainer.classList.add('shake-anim');
+            setTimeout(() => qContainer.classList.remove('shake-anim'), 600);
+          }
+          return;
+        } else {
+          showToast(`⚠️ Para avançar até este ponto, você deve realizar e acertar o Desafio Prático do Módulo ${pendingMod.num}!`, 4500);
+          slideNum = pendingMod.quizSlide;
+        }
       }
     }
 
@@ -1488,6 +1783,14 @@
     if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
 
     if (e.key === 'Escape') {
+      if (state.isStudentIdModalOpen) {
+        if (!state.isStudentRegistered && !state.isGestor) {
+          showToast('⚠️ É obrigatório registrar seu nome e CPF para iniciar o treinamento.', 3500);
+        } else {
+          closeStudentIdModal();
+        }
+        return;
+      }
       if (state.isUnlockModalOpen) {
         closeUnlockModal();
         return;
@@ -1514,7 +1817,7 @@
       }
     }
 
-    if (state.isOverviewOpen || state.isHelpOpen || state.isPaywallOpen || state.isUnlockModalOpen) return;
+    if (state.isOverviewOpen || state.isHelpOpen || state.isPaywallOpen || state.isUnlockModalOpen || state.isStudentIdModalOpen) return;
 
     switch (e.key) {
       case 'ArrowRight':
@@ -1594,6 +1897,11 @@
     goToSlide,
     nextSlide,
     prevSlide,
+    startCourse,
+    openStudentIdModal,
+    closeStudentIdModal,
+    submitStudentRegistration,
+    printCertificate,
     openCardZoom,
     closeCardZoom,
     toggleFullscreen,
