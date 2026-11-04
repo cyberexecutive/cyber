@@ -1,5 +1,5 @@
 /**
- * Curso de Segurança da Informação e Boas Práticas no Trabalho
+ * Capacitação Executiva em Segurança da Informação e Conscientização Digital
  * Engine Interativa em JavaScript Puro
  */
 

@@ -2473,14 +2473,14 @@ body.light-mode .zoomed-subtitle-large {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: clamp(3px, 0.6vh, 6px);
+  margin-bottom: clamp(4px, 0.8vh, 8px);
 }
 
 .cert-top-crest {
-  width: clamp(54px, 6.6vh, 76px);
-  height: clamp(54px, 6.6vh, 76px);
+  width: clamp(80px, 9.8vh, 114px);
+  height: clamp(80px, 9.8vh, 114px);
   object-fit: contain;
-  filter: drop-shadow(0 4px 14px rgba(180, 83, 9, 0.45));
+  filter: drop-shadow(0 6px 18px rgba(180, 83, 9, 0.5));
   display: block;
 }
 
@@ -2495,23 +2495,24 @@ body.light-mode .zoomed-subtitle-large {
   font-weight: 900;
   letter-spacing: 2.2px;
   text-transform: uppercase;
-  padding: 2.5px 16px;
+  padding: 2.5px 18px;
   border-radius: 99px;
   box-shadow: 0 2px 8px rgba(180, 83, 9, 0.3);
-  margin-bottom: clamp(4px, 0.8vh, 8px);
+  margin-bottom: clamp(4px, 0.8vh, 7px);
 }
 
 .cert-title {
-  font-size: clamp(1.22rem, 1.8vw, 2.05rem);
+  font-size: clamp(1.05rem, 1.5vw, 1.68rem);
   font-weight: 900;
-  letter-spacing: 1.5px;
+  letter-spacing: 1.2px;
   color: #0f172a;
   background: linear-gradient(135deg, #091322 0%, #1e293b 50%, #334155 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   text-transform: uppercase;
-  line-height: 1.15;
-  margin: 0;
+  line-height: 1.2;
+  margin: 0 auto;
+  max-width: 980px;
 }
 
 .cert-sub {

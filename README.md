@@ -1,4 +1,4 @@
-# Curso de Segurança da Informação e Boas Práticas no Trabalho
+# Capacitação Executiva em Segurança da Informação e Conscientização Digital
 
 Plataforma web de capacitação e conscientização corporativa em Segurança da Informação, Engenharia Social, Proteção de Dados (LGPD) e Boas Práticas Digitais.
 
