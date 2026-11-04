@@ -104,6 +104,7 @@
     totalSlides: 34,
     maxDemoSlide: 8, // Slides 1 a 8 liberados na demonstração (Módulos 01 e 02)
     isUnlocked: false,
+    isGestor: false,
     intendedSlide: null,
     validAccessHashes: [
       '085301361b7d9548d2916efbed814b03cce46e6de7496dc04cc83f8aa6618b84', // CYBER-EXEC-8492-PRO
@@ -1154,10 +1155,14 @@
     return result;
   }
 
+  const GESTOR_KEYS = ['GESTOR', 'ADMIN', 'MASTER', 'CYBERMASTER', 'CYBER-MASTER', 'GESTAO', 'DIRETORIA', 'PROFESSOR', 'SUPERADMIN'];
+
   function isKeyValid(inputKey) {
     if (!inputKey || typeof inputKey !== 'string') return false;
     const cleanKey = inputKey.trim().toUpperCase();
     if (!cleanKey) return false;
+
+    if (GESTOR_KEYS.includes(cleanKey)) return true;
 
     const hashRaw = sha256(cleanKey);
     const hashNoSeparators = sha256(cleanKey.replace(/[\s\-_]/g, ''));
@@ -1170,8 +1175,14 @@
    */
   function checkAccessState() {
     try {
-      // 1. Opção B: Verificação via Parâmetro da URL (?acesso=..., ?token=..., ?aluno=..., ?key=...)
+      // 1. Detecção automática de ambiente local (gestor no próprio computador)
+      const isLocalEnvironment = window.location.protocol === 'file:' || 
+                                 window.location.hostname === 'localhost' || 
+                                 window.location.hostname === '127.0.0.1';
+
+      // 2. Verificação via Parâmetro da URL (?gestor, ?admin, ?master, ?gestao, ?acesso=..., ?token=...)
       const urlParams = new URLSearchParams(window.location.search);
+      const isGestorParam = urlParams.has('gestor') || urlParams.has('admin') || urlParams.has('master') || urlParams.has('gestao');
       const accessParam = (
         urlParams.get('acesso') ||
         urlParams.get('token') ||
@@ -1180,18 +1191,30 @@
         ''
       ).trim();
 
-      if (accessParam && isKeyValid(accessParam)) {
-        unlockCourse(true, '🎉 Acesso Completo Ativado via Link! Bem-vindo(a) ao treinamento.');
+      // Ambiente local ou parâmetro gestor libera automaticamente
+      if (isLocalEnvironment || isGestorParam) {
+        unlockCourse(false, '', true);
         return;
       }
 
-      // 2. Opção A: Verificação de Chave/Token persistido em localStorage
+      if (accessParam && isKeyValid(accessParam)) {
+        const isMaster = GESTOR_KEYS.includes(accessParam.toUpperCase());
+        unlockCourse(true, isMaster ? '👑 Modo Gestor Ativado! Todos os 34 slides e módulos liberados.' : '🎉 Acesso Completo Ativado via Link! Bem-vindo(a) ao treinamento.', isMaster);
+        return;
+      }
+
+      // 3. Verificação de Chave/Token persistido em localStorage
       const savedUnlock = localStorage.getItem('cybersec_course_unlocked');
+      const savedRole = localStorage.getItem('cybersec_user_role');
       if (savedUnlock === 'true') {
         state.isUnlocked = true;
+        if (savedRole === 'gestor') {
+          state.isGestor = true;
+        }
         updateUnlockUI();
       } else {
         state.isUnlocked = false;
+        state.isGestor = false;
         updateUnlockUI();
       }
     } catch (e) {
@@ -1199,17 +1222,21 @@
     }
   }
 
-  function unlockCourse(showFeedbackToast = true, toastMessage = '🎉 Parabéns! Acesso completo liberado com sucesso.') {
+  function unlockCourse(showFeedbackToast = true, toastMessage = '🎉 Parabéns! Acesso completo liberado com sucesso.', asGestor = false) {
     state.isUnlocked = true;
+    if (asGestor) state.isGestor = true;
     try {
       localStorage.setItem('cybersec_course_unlocked', 'true');
+      if (state.isGestor) {
+        localStorage.setItem('cybersec_user_role', 'gestor');
+      }
     } catch (e) {}
 
     updateUnlockUI();
     buildOverviewGrid();
     renderModulesDrawer();
 
-    if (showFeedbackToast) {
+    if (showFeedbackToast && toastMessage) {
       showToast(toastMessage, 'success');
     }
 
@@ -1225,14 +1252,16 @@
 
   function lockCourse() {
     state.isUnlocked = false;
+    state.isGestor = false;
     try {
       localStorage.removeItem('cybersec_course_unlocked');
+      localStorage.removeItem('cybersec_user_role');
     } catch (e) {}
 
     updateUnlockUI();
     buildOverviewGrid();
     renderModulesDrawer();
-    showToast('Modo demonstração ativado.', 'info');
+    showToast('Modo demonstração ativado (módulos 3 a 11 bloqueados para teste).', 'info');
     if (state.currentSlide > state.maxDemoSlide) {
       goToSlide(1);
     }
@@ -1242,14 +1271,22 @@
     if (!dom.btnHeaderUnlock) return;
     if (state.isUnlocked) {
       dom.btnHeaderUnlock.classList.add('unlocked');
-      if (dom.accessBadgeText) dom.accessBadgeText.textContent = 'Acesso Completo';
-      if (dom.badgeActionLabel) dom.badgeActionLabel.textContent = '✓ Liberado';
-      dom.btnHeaderUnlock.title = 'Acesso Completo Liberado (Clique para detalhes)';
+      if (state.isGestor) {
+        dom.btnHeaderUnlock.classList.add('gestor');
+        if (dom.accessBadgeText) dom.accessBadgeText.textContent = '👑 Modo Gestor';
+        if (dom.badgeActionLabel) dom.badgeActionLabel.textContent = '• Totalmente Liberado';
+        dom.btnHeaderUnlock.title = 'Modo Gestor Ativo: todos os 34 slides e módulos liberados. Clique para opções.';
+      } else {
+        dom.btnHeaderUnlock.classList.remove('gestor');
+        if (dom.accessBadgeText) dom.accessBadgeText.textContent = 'Acesso Completo';
+        if (dom.badgeActionLabel) dom.badgeActionLabel.textContent = '✓ Liberado';
+        dom.btnHeaderUnlock.title = 'Acesso Completo Liberado (Clique para detalhes)';
+      }
     } else {
-      dom.btnHeaderUnlock.classList.remove('unlocked');
+      dom.btnHeaderUnlock.classList.remove('unlocked', 'gestor');
       if (dom.accessBadgeText) dom.accessBadgeText.textContent = 'Demonstração Gratuita';
-      if (dom.badgeActionLabel) dom.badgeActionLabel.textContent = '🔑 Já sou Aluno';
-      dom.btnHeaderUnlock.title = 'Versão Demo (Módulos 1-2). Clique para inserir chave de acesso';
+      if (dom.badgeActionLabel) dom.badgeActionLabel.textContent = '🔑 Já sou Aluno / Gestor';
+      dom.btnHeaderUnlock.title = 'Versão Demo (Módulos 1-2). Clique para inserir chave de acesso ou senha de gestor';
     }
   }
 
@@ -1311,15 +1348,16 @@
     }
 
     if (isKeyValid(rawKey)) {
+      const isMaster = GESTOR_KEYS.includes(rawKey.toUpperCase());
       if (dom.unlockStatusMsg) {
-        dom.unlockStatusMsg.textContent = '✓ Chave validada! Liberando acesso...';
+        dom.unlockStatusMsg.textContent = isMaster ? '👑 Chave de Gestor confirmada! Liberando todos os slides...' : '✓ Chave validada! Liberando acesso...';
         dom.unlockStatusMsg.className = 'unlock-status-msg success';
       }
       if (dom.btnSubmitUnlock) dom.btnSubmitUnlock.disabled = true;
 
       setTimeout(() => {
         if (dom.btnSubmitUnlock) dom.btnSubmitUnlock.disabled = false;
-        unlockCourse(true, '🎉 Parabéns! Acesso completo liberado com sucesso.');
+        unlockCourse(true, isMaster ? '👑 Modo Gestor Ativado! Todos os 34 slides e módulos liberados.' : '🎉 Parabéns! Acesso completo liberado com sucesso.', isMaster);
       }, 500);
     } else {
       if (dom.unlockStatusMsg) {
@@ -1355,7 +1393,14 @@
     if (dom.btnHeaderUnlock) {
       dom.btnHeaderUnlock.addEventListener('click', () => {
         if (state.isUnlocked) {
-          showToast('✅ Você possui Acesso Completo a todos os 11 módulos e ao Certificado!', 'success');
+          const alternar = confirm(
+            "👑 MODO GESTOR / ACESSO COMPLETO ATIVO\n\n" +
+            "• Todos os 34 slides e módulos estão liberados para navegação e gestão.\n\n" +
+            "Deseja alternar temporariamente para o 'Modo Aluno Demonstração' (para testar o bloqueio dos módulos 3 a 11)?"
+          );
+          if (alternar) {
+            lockCourse();
+          }
         } else {
           openUnlockModal();
         }
@@ -1551,6 +1596,13 @@
     openUnlockModal,
     closeUnlockModal,
     getState: () => ({ ...state })
+  };
+
+  window.gestor = {
+    desbloquear: () => unlockCourse(true, '👑 Modo Gestor Ativado!', true),
+    bloquear: () => lockCourse(),
+    irParaSlide: (n) => goToSlide(n),
+    status: () => state.isUnlocked ? 'Desbloqueado (Gestor)' : 'Bloqueado (Demo)'
   };
 
 })();
