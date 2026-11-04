@@ -166,6 +166,7 @@
     certStudentCpfInput: document.getElementById('cert-student-cpf'),
     certDisplayName: document.getElementById('cert-display-name'),
     certDisplayCpf: document.getElementById('cert-display-cpf'),
+    certAuthCode: document.getElementById('cert-auth-code'),
     statModulesCompleted: document.getElementById('stat-modules-completed'),
     statScorePercent: document.getElementById('stat-score-percent'),
     paywallModal: document.getElementById('paywall-modal'),
@@ -673,6 +674,14 @@
       return `${digits.slice(0, 3)}.${digits.slice(3, 6)}.${digits.slice(6, 9)}-${digits.slice(9, 11)}`;
     }
 
+    function generateStudentAuthCode(name, cpf) {
+      const cleanName = (name || '').trim().toUpperCase();
+      const cleanCpf = (cpf || '').replace(/\D/g, '');
+      const seed = `${cleanName || 'ALUNO'}|${cleanCpf || '00000000000'}|CYBER-EXEC-2026-AUTH`;
+      const hash = sha256(seed).toUpperCase();
+      return `SEC-2026-${hash.slice(0, 4)}-${hash.slice(4, 8)}`;
+    }
+
     function updateCertDisplays() {
       const name = (state.studentName || '').trim() || 'Colaborador(a) Exemplar';
       if (dom.certDisplayName) dom.certDisplayName.textContent = name;
@@ -686,6 +695,10 @@
           dom.certDisplayCpf.textContent = '';
           dom.certDisplayCpf.style.display = 'none';
         }
+      }
+
+      if (dom.certAuthCode) {
+        dom.certAuthCode.textContent = generateStudentAuthCode(state.studentName, state.studentCpf);
       }
     }
 
