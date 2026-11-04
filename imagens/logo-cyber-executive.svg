@@ -1,0 +1,129 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%">
+  <defs>
+    <!-- Gradientes de Ouro, Âmbar e Bronze Nobre -->
+    <linearGradient id="goldRingGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef3c7" />
+      <stop offset="25%" stop-color="#fbbf24" />
+      <stop offset="50%" stop-color="#d97706" />
+      <stop offset="75%" stop-color="#f59e0b" />
+      <stop offset="100%" stop-color="#b45309" />
+    </linearGradient>
+
+    <radialGradient id="sealBodyGrad" cx="50%" cy="45%" r="55%">
+      <stop offset="0%" stop-color="#854d0e" />
+      <stop offset="45%" stop-color="#713f12" />
+      <stop offset="85%" stop-color="#451a03" />
+      <stop offset="100%" stop-color="#270e02" />
+    </radialGradient>
+
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#d97706" stop-opacity="0.9" />
+      <stop offset="50%" stop-color="#b45309" stop-opacity="0.85" />
+      <stop offset="100%" stop-color="#78350f" stop-opacity="0.95" />
+    </linearGradient>
+
+    <linearGradient id="cyberGoldGlow" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a" />
+      <stop offset="50%" stop-color="#fbbf24" />
+      <stop offset="100%" stop-color="#d97706" />
+    </linearGradient>
+
+    <linearGradient id="metalTieGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="35%" stop-color="#fef3c7" />
+      <stop offset="70%" stop-color="#fde68a" />
+      <stop offset="100%" stop-color="#f59e0b" />
+    </linearGradient>
+
+    <filter id="subtleGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+
+    <filter id="sealShadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#451a03" flood-opacity="0.45" />
+    </filter>
+  </defs>
+
+  <!-- Grupo Principal do Selo com Sombra Suave -->
+  <g filter="url(#sealShadow)">
+    <!-- 1. Borda Exterior Dourada Metálica (Anel Externo) -->
+    <circle cx="250" cy="250" r="236" fill="url(#goldRingGrad)" />
+    <circle cx="250" cy="250" r="226" fill="#451a03" />
+
+    <!-- 2. Corpo Central do Selo (Tom Chocolate Âmbar Intenso da Imagem 2) -->
+    <circle cx="250" cy="250" r="220" fill="url(#sealBodyGrad)" />
+
+    <!-- 3. Costura / Pesponto Pontilhado do Selo Oficial (Da Imagem 2) -->
+    <circle cx="250" cy="250" r="206" fill="none" stroke="#fef3c7" stroke-width="3" stroke-dasharray="10 8" opacity="0.85" />
+
+    <!-- 4. Trilhas de Circuito Cyber Tecnológico Dourado (Da Imagem 1 no estilo Imagem 2) -->
+    <g stroke="url(#goldRingGrad)" stroke-width="2.5" fill="none" opacity="0.45" stroke-linecap="round">
+      <!-- Trilhas Superiores -->
+      <path d="M130 140 L165 175 H195" />
+      <circle cx="130" cy="140" r="4.5" fill="#fbbf24" />
+      <circle cx="195" cy="175" r="3.5" fill="#fbbf24" />
+
+      <path d="M370 140 L335 175 H305" />
+      <circle cx="370" cy="140" r="4.5" fill="#fbbf24" />
+      <circle cx="305" cy="175" r="3.5" fill="#fbbf24" />
+
+      <!-- Trilhas Laterais -->
+      <path d="M85 250 H125 L145 270" />
+      <circle cx="85" cy="250" r="4" fill="#fbbf24" />
+      <circle cx="145" cy="270" r="3.5" fill="#fbbf24" />
+
+      <path d="M415 250 H375 L355 270" />
+      <circle cx="415" cy="250" r="4" fill="#fbbf24" />
+      <circle cx="355" cy="270" r="3.5" fill="#fbbf24" />
+
+      <!-- Trilhas Inferiores -->
+      <path d="M140 370 L175 335 H195" />
+      <circle cx="140" cy="370" r="4" fill="#fbbf24" />
+
+      <path d="M360 370 L325 335 H305" />
+      <circle cx="360" cy="370" r="4" fill="#fbbf24" />
+    </g>
+
+    <!-- 5. O Escudo Nobre de Segurança (Cyber Shield) -->
+    <!-- Brilho externo do escudo -->
+    <path d="M250 82 L380 135 V245 C380 338 250 405 250 405 C250 405 120 338 120 245 V135 Z"
+          fill="none" stroke="#f59e0b" stroke-width="1.5" opacity="0.3" />
+
+    <!-- Borda externa do escudo -->
+    <path d="M250 86 L375 138 V245 C375 334 250 398 250 398 C250 398 125 334 125 245 V138 Z"
+          fill="url(#shieldGrad)" stroke="url(#goldRingGrad)" stroke-width="7" stroke-linejoin="round" />
+
+    <!-- Borda interna lapidada chanfrada -->
+    <path d="M250 102 L358 148 V242 C358 318 250 376 250 376 C250 376 142 318 142 242 V148 Z"
+          fill="none" stroke="#fef3c7" stroke-width="2.5" opacity="0.75" />
+
+    <!-- 6. Silhueta do Executivo de Cibersegurança (Head, Shoulders, Tie) -->
+    <g filter="url(#subtleGlow)">
+      <!-- Cabeça (Anel Tecnológico e Centro) -->
+      <circle cx="250" cy="180" r="38" fill="none" stroke="url(#metalTieGrad)" stroke-width="8.5" />
+      <circle cx="250" cy="180" r="23" fill="#fef3c7" opacity="0.25" />
+
+      <!-- Ombros / Colarinho Arqueado Tecnológico -->
+      <path d="M178 268 C198 238 226 230 250 230 C274 230 302 238 322 268"
+            fill="none" stroke="url(#metalTieGrad)" stroke-width="8.5" stroke-linecap="round" />
+
+      <!-- Gravata Executiva em Vetor Nobre -->
+      <!-- Nó da Gravata -->
+      <polygon points="237,244 263,244 257,262 243,262" fill="url(#metalTieGrad)" stroke="#b45309" stroke-width="1" />
+      <!-- Corpo da Gravata com Facetas Metálicas -->
+      <polygon points="243,262 257,262 267,330 250,348 233,330" fill="url(#metalTieGrad)" stroke="#b45309" stroke-width="1.2" />
+      <!-- Vinco central 3D da gravata -->
+      <line x1="250" y1="262" x2="250" y2="348" stroke="#d97706" stroke-width="2" opacity="0.7" />
+    </g>
+
+    <!-- 7. Inscrição Nobre Inferior no Selo -->
+    <g font-family="'Montserrat', 'Inter', -apple-system, sans-serif" text-anchor="middle" font-weight="900">
+      <!-- Ano e Marca com Estrelas Laterais -->
+      <path d="M205 442 L208 448 L214 448 L209 452 L211 458 L205 454 L199 458 L201 452 L196 448 L202 448 Z" fill="#fbbf24" />
+      <text x="250" y="456" fill="#fef3c7" font-size="20" letter-spacing="4">2026</text>
+      <path d="M295 442 L298 448 L304 448 L299 452 L301 458 L295 454 L289 458 L291 452 L286 448 L292 448 Z" fill="#fbbf24" />
+    </g>
+  </g>
+</svg>
+
