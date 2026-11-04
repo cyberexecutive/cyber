@@ -32,6 +32,7 @@
   --lp-radius-sm: 8px;
   --lp-radius-md: 14px;
   --lp-radius-lg: 22px;
+  --lp-radius-full: 9999px;
   --lp-transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -733,7 +734,7 @@ body {
   letter-spacing: 0.5px;
   font-weight: 900;
   white-space: nowrap;
-  border-radius: var(--lp-radius-full);
+  border-radius: 9999px;
   text-transform: uppercase;
 }
 
