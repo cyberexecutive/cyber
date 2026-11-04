@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Hotmart Post - Capacitação Executiva em Segurança da Informação</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Cinzel:wght@700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      width: 1200px;
+      height: 1200px;
+      overflow: hidden;
+      background: #040810;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #f8fafc;
+      position: relative;
+    }
+
+    /* Fundo 3D Hiper-Realista */
+    .hyper-bg {
+      position: absolute;
+      inset: 0;
+      width: 1200px;
+      height: 1200px;
+      object-fit: cover;
+      z-index: 1;
+    }
+
+    /* Vinheta e Tratamento de Contraste para Tipografia */
+    .vignette-overlay {
+      position: absolute;
+      inset: 0;
+      background: 
+        radial-gradient(circle at 50% 12%, rgba(4, 7, 13, 0.94) 0%, rgba(4, 7, 13, 0.75) 40%, rgba(4, 7, 13, 0.35) 70%, rgba(4, 7, 13, 0.94) 100%),
+        linear-gradient(180deg, rgba(4, 7, 13, 0.96) 0%, rgba(4, 7, 13, 0.6) 22%, rgba(4, 7, 13, 0.25) 50%, rgba(4, 7, 13, 0.85) 82%, rgba(4, 7, 13, 0.98) 100%);
+      z-index: 2;
+    }
+
+    /* Container Principal */
+    .ad-container {
+      position: relative;
+      z-index: 10;
+      width: 1200px;
+      height: 1200px;
+      padding: 40px 48px 42px 48px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    /* =========================================
+       1. Top Header & Titulação de Alto Impacto
+       ========================================= */
+    .top-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .top-badge-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 12px;
+    }
+
+    .hotmart-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid rgba(245, 158, 11, 0.5);
+      backdrop-filter: blur(12px);
+      padding: 6px 18px;
+      border-radius: 999px;
+      box-shadow: 0 0 22px rgba(245, 158, 11, 0.25);
+    }
+
+    .hotmart-badge svg {
+      width: 16px;
+      height: 16px;
+      fill: #fbbf24;
+    }
+
+    .hotmart-badge span {
+      font-size: 12.5px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #fbbf24;
+    }
+
+    .official-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(6, 182, 212, 0.14);
+      border: 1px solid rgba(6, 182, 212, 0.45);
+      backdrop-filter: blur(12px);
+      padding: 6px 18px;
+      border-radius: 999px;
+      box-shadow: 0 0 20px rgba(6, 182, 212, 0.2);
+    }
+
+    .official-badge-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #06b6d4;
+      box-shadow: 0 0 10px #06b6d4;
+    }
+
+    .official-badge span {
+      font-size: 12.5px;
+      font-weight: 800;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: #38bdf8;
+    }
+
+    .headline-main {
+      font-size: 41px;
+      font-weight: 900;
+      line-height: 1.14;
+      letter-spacing: -0.5px;
+      color: #ffffff;
+      text-shadow: 0 4px 25px rgba(0, 0, 0, 0.95);
+      max-width: 1100px;
+    }
+
+    .headline-main .text-cyan {
+      background: linear-gradient(135deg, #a5f3fc 0%, #38bdf8 50%, #06b6d4 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 20px rgba(6, 182, 212, 0.5));
+    }
+
+    .headline-main .text-gold {
+      background: linear-gradient(135deg, #fef08a 0%, #fbbf24 50%, #d97706 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 20px rgba(245, 158, 11, 0.5));
+    }
+
+    .headline-sub {
+      font-size: 17px;
+      font-weight: 600;
+      color: #cbd5e1;
+      margin-top: 10px;
+      max-width: 950px;
+      line-height: 1.4;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.85);
+    }
+
+    .headline-sub strong {
+      color: #f8fafc;
+      font-weight: 800;
+    }
+
+    /* =========================================
+       2. Centro: Vitrine 3D (Certificado + Selo de Ouro)
+       ========================================= */
+    .showcase-area {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 30px;
+      align-items: center;
+      margin: 8px 0;
+    }
+
+    /* Vitrine do Diploma Limpo */
+    .cert-mockup-wrapper {
+      position: relative;
+      background: rgba(11, 17, 32, 0.75);
+      border: 2px solid rgba(245, 158, 11, 0.55);
+      border-radius: 20px;
+      padding: 10px;
+      box-shadow: 
+        0 25px 60px rgba(0, 0, 0, 0.95),
+        0 0 40px rgba(6, 182, 212, 0.25),
+        0 0 35px rgba(245, 158, 11, 0.25);
+      backdrop-filter: blur(14px);
+    }
+
+    .cert-mockup-wrapper::before {
+      content: "";
+      position: absolute;
+      top: -2px;
+      left: 12%;
+      right: 12%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #38bdf8, #fbbf24, transparent);
+    }
+
+    .cert-mockup-img {
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+      object-position: center center;
+      border-radius: 14px;
+      display: block;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.4);
+    }
+
+    .cert-corner-tag {
+      position: absolute;
+      bottom: 22px;
+      left: 24px;
+      background: rgba(4, 7, 13, 0.94);
+      border: 1.5px solid rgba(6, 182, 212, 0.65);
+      backdrop-filter: blur(14px);
+      padding: 8px 18px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.85), 0 0 15px rgba(6, 182, 212, 0.3);
+    }
+
+    .cert-corner-tag svg {
+      width: 16px;
+      height: 16px;
+      color: #38bdf8;
+    }
+
+    .cert-corner-tag span {
+      font-size: 12.5px;
+      font-weight: 800;
+      color: #f1f5f9;
+      letter-spacing: 0.5px;
+    }
+
+    /* Coluna do Selo de Autenticidade */
+    .seal-column {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      background: radial-gradient(circle at 50% 25%, rgba(245, 158, 11, 0.22) 0%, rgba(15, 23, 42, 0.8) 80%);
+      border: 2px solid rgba(245, 158, 11, 0.55);
+      border-radius: 24px;
+      padding: 24px 20px 22px 20px;
+      box-shadow: 
+        0 25px 60px rgba(0, 0, 0, 0.95),
+        0 0 50px rgba(245, 158, 11, 0.4);
+      position: relative;
+      backdrop-filter: blur(14px);
+    }
+
+    .seal-halo-glow {
+      position: absolute;
+      width: 230px;
+      height: 230px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(245, 158, 11, 0.6) 0%, transparent 70%);
+      filter: blur(22px);
+      top: 15px;
+      z-index: 1;
+    }
+
+    .seal-gold-img {
+      width: 205px;
+      height: 205px;
+      object-fit: contain;
+      position: relative;
+      z-index: 2;
+      filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.95)) drop-shadow(0 0 24px rgba(245, 158, 11, 0.55));
+    }
+
+    .seal-title {
+      font-family: 'Cinzel', serif;
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      color: #fef08a;
+      margin-top: 14px;
+      text-transform: uppercase;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.95);
+      position: relative;
+      z-index: 2;
+    }
+
+    .seal-subtitle {
+      font-size: 12px;
+      color: #cbd5e1;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-top: 4px;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* =========================================
+       3. Grid dos 4 Pilares Persuasivos
+       ========================================= */
+    .pillars-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-top: 10px;
+    }
+
+    .pillar-box {
+      background: rgba(11, 17, 32, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 18px;
+      padding: 18px 16px;
+      backdrop-filter: blur(14px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7);
+      position: relative;
+    }
+
+    .pillar-box:nth-child(1) { border-bottom: 3.5px solid #06b6d4; }
+    .pillar-box:nth-child(2) { border-bottom: 3.5px solid #f59e0b; }
+    .pillar-box:nth-child(3) { border-bottom: 3.5px solid #10b981; }
+    .pillar-box:nth-child(4) { border-bottom: 3.5px solid #8b5cf6; }
+
+    .pillar-icon-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .pillar-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .pillar-box:nth-child(1) .pillar-icon { background: rgba(6, 182, 212, 0.22); color: #06b6d4; }
+    .pillar-box:nth-child(2) .pillar-icon { background: rgba(245, 158, 11, 0.22); color: #f59e0b; }
+    .pillar-box:nth-child(3) .pillar-icon { background: rgba(16, 185, 129, 0.22); color: #10b981; }
+    .pillar-box:nth-child(4) .pillar-icon { background: rgba(139, 92, 246, 0.22); color: #8b5cf6; }
+
+    .pillar-icon svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .pillar-title {
+      font-size: 14.5px;
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1.25;
+    }
+
+    .pillar-desc {
+      font-size: 12px;
+      color: #94a3b8;
+      line-height: 1.4;
+      font-weight: 500;
+    }
+
+    /* =========================================
+       4. Rodapé de Conversão & Garantia Hotmart
+       ========================================= */
+    .conversion-bar {
+      margin-top: 14px;
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.92) 100%);
+      border: 1.5px solid rgba(245, 158, 11, 0.55);
+      border-radius: 20px;
+      padding: 18px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), 0 0 35px rgba(245, 158, 11, 0.25);
+    }
+
+    .trust-bullets {
+      display: flex;
+      gap: 24px;
+      align-items: center;
+    }
+
+    .trust-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #e2e8f0;
+    }
+
+    .trust-item svg {
+      width: 18px;
+      height: 18px;
+      color: #10b981;
+    }
+
+    .cta-btn-main {
+      background: linear-gradient(135deg, #fef08a 0%, #f59e0b 50%, #d97706 100%);
+      color: #060b14;
+      font-size: 16px;
+      font-weight: 900;
+      letter-spacing: 0.8px;
+      padding: 16px 36px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border: none;
+      box-shadow: 0 8px 30px rgba(245, 158, 11, 0.55);
+      text-transform: uppercase;
+    }
+
+    .cta-btn-main svg {
+      width: 18px;
+      height: 18px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Fundo 3D Hiper-Realista -->
+  <img src="imagens/hotmart-bg.jpg" alt="Cyber Background" class="hyper-bg">
+  <div class="vignette-overlay"></div>
+
+  <!-- Container Principal -->
+  <div class="ad-container">
+
+    <!-- 1. Top Header -->
+    <div class="top-header">
+      <div class="top-badge-row">
+        <div class="hotmart-badge">
+          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-9l6 4.5-6 4.5z"/></svg>
+          <span>Disponível no Hotmart • Acesso Imediato</span>
+        </div>
+        <div class="official-badge">
+          <span class="official-badge-dot"></span>
+          <span>Treinamento Corporativo Oficial 2026</span>
+        </div>
+      </div>
+
+      <h1 class="headline-main">
+        Capacitação Executiva em <span class="text-cyan">Segurança da Informação</span> & <span class="text-gold">Conscientização Digital</span>
+      </h1>
+
+      <p class="headline-sub">
+        Domine a proteção contra ameaças digitais modernas em um formato <strong>100% interativo, prático e sem vídeos longos</strong>.
+      </p>
+    </div>
+
+    <!-- 2. Área Central de Destaque -->
+    <div class="showcase-area">
+      
+      <!-- Mockup do Certificado Limpo -->
+      <div class="cert-mockup-wrapper">
+        <img src="imagens/diploma-clean.jpg" alt="Certificado Oficial de Capacitação em Cibersegurança" class="cert-mockup-img">
+        <div class="cert-corner-tag">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          <span>Certificado Formal Assinado Incluso (Carga Horária 4h)</span>
+        </div>
+      </div>
+
+      <!-- Selo de Autenticidade -->
+      <div class="seal-column">
+        <div class="seal-halo-glow"></div>
+        <img src="imagens/logo-cyber-executive.png" alt="Selo Oficial de Autenticidade Cyber Executive" class="seal-gold-img">
+        <div class="seal-title">Selo de Autenticidade</div>
+        <div class="seal-subtitle">Corporate Cybersecurity</div>
+      </div>
+
+    </div>
+
+    <!-- 3. Quatro Pilares Persuasivos -->
+    <div class="pillars-grid">
+
+      <div class="pillar-box">
+        <div class="pillar-icon-header">
+          <div class="pillar-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div class="pillar-title">Anti-Phishing & Golpes por IA</div>
+        </div>
+        <div class="pillar-desc">Defesa ativa contra clonagem de voz (Deepfakes), spear phishing e engenharia social.</div>
+      </div>
+
+      <div class="pillar-box">
+        <div class="pillar-icon-header">
+          <div class="pillar-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          </div>
+          <div class="pillar-title">100% Prático e Interativo</div>
+        </div>
+        <div class="pillar-desc">11 módulos e 10 quizzes com tomada de decisão sob pressão em cenários reais.</div>
+      </div>
+
+      <div class="pillar-box">
+        <div class="pillar-icon-header">
+          <div class="pillar-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          </div>
+          <div class="pillar-title">Certificado Formal Assinado</div>
+        </div>
+        <div class="pillar-desc">Emitido em PDF com hash criptográfico único, nome, CPF e assinatura da Diretoria (CEO).</div>
+      </div>
+
+      <div class="pillar-box">
+        <div class="pillar-icon-header">
+          <div class="pillar-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </div>
+          <div class="pillar-title">Conformidade LGPD & ISO</div>
+        </div>
+        <div class="pillar-desc">Políticas corporativas de acesso (2FA, senhas fortes) e resposta ágil a incidentes.</div>
+      </div>
+
+    </div>
+
+    <!-- 4. Rodapé de Conversão & Garantia -->
+    <div class="conversion-bar">
+      <div class="trust-bullets">
+        <div class="trust-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          <span>Garantia Incondicional 7 Dias</span>
+        </div>
+        <div class="trust-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          <span>Compra 100% Segura</span>
+        </div>
+        <div class="trust-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          <span>Acesso Imediato</span>
+        </div>
+      </div>
+
+      <button class="cta-btn-main">
+        <span>Garantir Vaga no Hotmart</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+
+  </div>
+</body>
+</html>
