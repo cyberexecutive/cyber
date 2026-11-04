@@ -1,10 +1,15 @@
-# Capacitação Executiva em Segurança da Informação e Conscientização Digital
+﻿# Capacitação Executiva em Segurança da Informação e Conscientização Digital
 
 Plataforma web de capacitação e conscientização corporativa em Segurança da Informação, Engenharia Social, Proteção de Dados (LGPD) e Boas Práticas Digitais.
 
 🔗 **Acesse online no GitHub Pages:**  
 - **Treinamento Interativo:** [https://cyberexecutive.github.io/cyber/](https://cyberexecutive.github.io/cyber/)  
 - **Landing Page de Vendas:** [https://cyberexecutive.github.io/cyber/landing.html](https://cyberexecutive.github.io/cyber/landing.html)  
+
+💳 **Checkouts Oficiais de Pagamento (R$ 47,00):**  
+- **Kiwify Checkout:** [https://pay.kiwify.com.br/E63o3Rc](https://pay.kiwify.com.br/E63o3Rc)  
+- **Kiwify Sales Page:** [https://kiwify.app/VXRZALg](https://kiwify.app/VXRZALg)  
+- **Hotmart Checkout:** [https://pay.hotmart.com/H108332477H](https://pay.hotmart.com/H108332477H)  
 
 ---
 
