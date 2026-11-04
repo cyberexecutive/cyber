@@ -2463,26 +2463,46 @@ body.light-mode .zoomed-subtitle-large {
   text-align: center;
   position: relative;
   z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: clamp(2px, 0.8vh, 8px);
+}
+
+.cert-crest-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: clamp(3px, 0.6vh, 6px);
+}
+
+.cert-top-crest {
+  width: clamp(54px, 6.6vh, 76px);
+  height: clamp(54px, 6.6vh, 76px);
+  object-fit: contain;
+  filter: drop-shadow(0 4px 14px rgba(180, 83, 9, 0.45));
+  display: block;
 }
 
 .cert-badge-ribbon {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
-  background: linear-gradient(90deg, #b45309 0%, #d97706 50%, #b45309 100%);
+  background: linear-gradient(90deg, #9a3412 0%, #d97706 50%, #9a3412 100%);
   color: #ffffff;
-  font-size: clamp(0.72rem, 0.88vw, 0.92rem);
+  font-size: clamp(0.66rem, 0.78vw, 0.82rem);
   font-weight: 900;
-  letter-spacing: 2px;
+  letter-spacing: 2.2px;
   text-transform: uppercase;
-  padding: 3px 18px;
+  padding: 2.5px 16px;
   border-radius: 99px;
-  box-shadow: 0 3px 12px rgba(180, 83, 9, 0.35);
-  margin-bottom: 4px;
+  box-shadow: 0 2px 8px rgba(180, 83, 9, 0.3);
+  margin-bottom: clamp(4px, 0.8vh, 8px);
 }
 
 .cert-title {
-  font-size: clamp(1.35rem, 2.1vw, 2.25rem);
+  font-size: clamp(1.22rem, 1.8vw, 2.05rem);
   font-weight: 900;
   letter-spacing: 1.5px;
   color: #0f172a;
@@ -2490,14 +2510,15 @@ body.light-mode .zoomed-subtitle-large {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   text-transform: uppercase;
-  line-height: 1.18;
+  line-height: 1.15;
+  margin: 0;
 }
 
 .cert-sub {
-  font-size: clamp(0.78rem, 0.94vw, 1.02rem);
+  font-size: clamp(0.72rem, 0.84vw, 0.94rem);
   color: #475569;
   letter-spacing: 0.8px;
-  margin-top: 3px;
+  margin-top: 2px;
   font-weight: 700;
 }
 
