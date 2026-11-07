@@ -106,15 +106,17 @@
     isUnlocked: false,
     isGestor: false,
     intendedSlide: null,
-    validAccessHashes: [
-      '085301361b7d9548d2916efbed814b03cce46e6de7496dc04cc83f8aa6618b84', // CYBER-EXEC-8492-PRO
-      '18d37b403c70c6b36a3f77092e3e5ec148b6bd662f3ff3ebc8b250f723c4e8d5', // CYBEREXEC8492PRO
-      '0cedb0f9a64a63b1af95a6364dbaf49950293a82a9e32ea1cfc824c637f63595', // SEC-2026-VIP-9741
-      '4324d6bbee7f0836b80cc736fa81ec7ee78f6e0d879c33d6c3e2cb5f4610ae14', // SEC2026VIP9741
-      '667dd167ca25703d48208f61810399ea00d671ec39ec8c05e32ac499c09ce92a', // CYBER-PRO-2026-X9K
-      '31f76bd6e275f2a0b9f7c17c93bd2af763ae933b2f8ca1e042bf69a7dd4a1c1d', // CYBERPRO2026X9K
-      '8c8c1fee9a2fec548c42cf5915d272d7bf638df3241d62d7a9ce7467d4ed5404', // ALUNO-CYBER-8842
-      '142d97345d0069ccd1d3a6deb8542fea5f8205f33d46b9a1d376370c1152fe5b'  // ALUNOCYBER8842
+    gestorAccessHashes: [
+      '7fd62403773ae1fcea8451bfcc2e9c78532ac735a1168b17eb87dfa0e5460022',
+      '4c890ea635bdad081d47951f347cbf0646e4fa4ae1c05b69968eb3d1f0f5b0f8'
+    ],
+    studentAccessHashes: [
+      '889ce4d15616e49d15053d059f007c62ceacad58abbe568b666fe4648f5ee313',
+      'a0ac5c6851fd399ba6724395f421dfda264320ac63e7dd51910b057fc39543e6',
+      'fbe2dd047fc138a4bb21654500ff03cdf32f054ae0b8a1bbbde890b4c05d2c09',
+      '5c38a497e3208432693b5f516da517439c65ba8e626c7239d392568459e3ce8c',
+      'abed2fa67021ad7e9bf73611cbaf1f524404ba34c1ac1b4199aa271da34fb668',
+      'c723ab4f930795dd5f9e11bcb66fa8f6ac234768e6483db979d3b41b9f5dc755'
     ],
     isFullscreen: false,
     isOverviewOpen: false,
@@ -934,6 +936,31 @@
    * Executa a impressão e controle de 1ª Via / 2ª Via do Certificado
    */
   function printCertificate() {
+    // 1. Validação estrita de matrícula / desbloqueio
+    if (!state.isUnlocked) {
+      showToast('🔒 O Certificado Oficial é exclusivo para colaboradores matriculados no treinamento.', 4500);
+      openPaywallModal(34);
+      return;
+    }
+
+    // 2. Validação estrita de conclusão de todos os desafios práticos (exceto Gestor)
+    if (!state.isGestor) {
+      const pendingMod = modulesMeta.find(m => m.quizSlide && !(state.quizzes[m.id] && state.quizzes[m.id].correct));
+      if (pendingMod) {
+        showToast(`⚠️ Você precisa realizar e acertar todos os Desafios Práticos (pendente: Módulo ${pendingMod.num}) para emitir seu Certificado!`, 5000);
+        goToSlide(pendingMod.quizSlide);
+        return;
+      }
+    }
+
+    // Autoriza temporariamente a renderização para impressão no CSS
+    document.body.classList.add('cert-printing-authorized');
+    const finishPrint = () => {
+      document.body.classList.remove('cert-printing-authorized');
+      window.removeEventListener('afterprint', finishPrint);
+    };
+    window.addEventListener('afterprint', finishPrint);
+
     if (!state.certIssued) {
       // 1ª Emissão Oficial
       state.certIssued = true;
@@ -952,12 +979,16 @@
       setTimeout(() => {
         updateCertificateSecondCopyUI(true);
         showToast('✅ Certificado emitido com sucesso! Emissões subsequentes serão registradas como 2ª Via Oficial.', 5000);
+        document.body.classList.remove('cert-printing-authorized');
       }, 1000);
     } else {
       // 2ª Via Oficial
       updateCertificateSecondCopyUI(true);
       showToast('📄 Imprimindo 2ª Via Oficial do seu Certificado registrado...', 3500);
       window.print();
+      setTimeout(() => {
+        document.body.classList.remove('cert-printing-authorized');
+      }, 1000);
     }
   }
 
@@ -1463,25 +1494,13 @@
     return result;
   }
 
-  const GESTOR_KEYS = [
-    'GESTOR',
-    'ADMIN',
-    'MASTER',
-    'CYBERMASTER',
-    'CYBER-MASTER',
-    'GESTAO',
-    'DIRETORIA',
-    'PROFESSOR',
-    'SUPERADMIN',
-    'CYBER-EXEC-8492-PRO',
-    'CYBEREXEC8492PRO'
-  ];
-
   function isGestorKey(inputKey) {
     if (!inputKey || typeof inputKey !== 'string') return false;
     const cleanKey = inputKey.trim().toUpperCase();
-    const cleanNoSep = cleanKey.replace(/[\s\-_]/g, '');
-    return GESTOR_KEYS.some(k => k === cleanKey || k.replace(/[\s\-_]/g, '') === cleanNoSep);
+    if (!cleanKey) return false;
+    const hashRaw = sha256(cleanKey);
+    const hashNoSep = sha256(cleanKey.replace(/[\s\-_]/g, ''));
+    return state.gestorAccessHashes.includes(hashRaw) || state.gestorAccessHashes.includes(hashNoSep);
   }
 
   function isKeyValid(inputKey) {
@@ -1494,35 +1513,33 @@
     const hashRaw = sha256(cleanKey);
     const hashNoSeparators = sha256(cleanKey.replace(/[\s\-_]/g, ''));
 
-    return state.validAccessHashes.includes(hashRaw) || state.validAccessHashes.includes(hashNoSeparators);
+    return state.studentAccessHashes.includes(hashRaw) || state.studentAccessHashes.includes(hashNoSeparators);
   }
 
   /**
-   * Controle de Acesso e Modo Demonstração (Opção A + Opção B)
+   * Controle de Acesso e Modo Demonstração
    */
   function checkAccessState() {
     try {
-      // 1. Detecção automática de ambiente local (gestor no próprio computador)
+      // 1. Detecção automática de ambiente local (desenvolvimento no computador do autor)
       const isLocalEnvironment = window.location.protocol === 'file:' || 
                                  window.location.hostname === 'localhost' || 
                                  window.location.hostname === '127.0.0.1';
 
-      // 2. Verificação via Parâmetro da URL (?gestor, ?admin, ?master, ?gestao, ?acesso=..., ?token=...)
-      const urlParams = new URLSearchParams(window.location.search);
-      const isGestorParam = urlParams.has('gestor') || urlParams.has('admin') || urlParams.has('master') || urlParams.has('gestao');
-      const accessParam = (
-        urlParams.get('acesso') ||
-        urlParams.get('token') ||
-        urlParams.get('aluno') ||
-        urlParams.get('key') ||
-        ''
-      ).trim();
-
-      // Ambiente local ou parâmetro gestor libera automaticamente
-      if (isLocalEnvironment || isGestorParam) {
+      if (isLocalEnvironment) {
         unlockCourse(false, '', true);
         return;
       }
+
+      // 2. Verificação via Token Criptográfico na URL (?token=... ou ?acesso=... ou ?key=...)
+      const urlParams = new URLSearchParams(window.location.search);
+      const accessParam = (
+        urlParams.get('token') ||
+        urlParams.get('acesso') ||
+        urlParams.get('key') ||
+        urlParams.get('aluno') ||
+        ''
+      ).trim();
 
       if (accessParam && isKeyValid(accessParam)) {
         const isMaster = isGestorKey(accessParam);
@@ -1937,20 +1954,11 @@
     toggleTheme,
     retryQuiz,
     restartCourse,
-    unlockCourse,
-    lockCourse,
     openPaywallModal,
     closePaywallModal,
     openUnlockModal,
     closeUnlockModal,
-    getState: () => ({ ...state })
-  };
-
-  window.gestor = {
-    desbloquear: () => unlockCourse(true, '👑 Modo Gestor Ativado!', true),
-    bloquear: () => lockCourse(),
-    irParaSlide: (n) => goToSlide(n),
-    status: () => state.isUnlocked ? 'Desbloqueado (Gestor)' : 'Bloqueado (Demo)'
+    submitUnlockKey
   };
 
 })();

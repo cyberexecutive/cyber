@@ -3584,6 +3584,26 @@ body.light-mode .zoomed-subtitle-large {
   .slide:not(#slide-34) {
     display: none !important;
   }
+
+  /* Blindagem contra tentativa de impressao direta sem autorizacao */
+  body:not(.cert-printing-authorized) #slide-34,
+  body:not(.cert-printing-authorized) .certificate-card {
+    display: none !important;
+  }
+  body:not(.cert-printing-authorized)::after {
+    content: "CERTIFICADO BLOQUEADO: Conclua todos os modulos e avaliacoes do curso para liberar a emissao oficial.";
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    height: 80vh;
+    font-size: 20px;
+    font-weight: 700;
+    color: #dc2626;
+    text-align: center;
+    padding: 40px;
+    border: 2px dashed #dc2626;
+    margin: 40px;
+  }
   #slide-34 {
     display: flex !important;
     opacity: 1 !important;
