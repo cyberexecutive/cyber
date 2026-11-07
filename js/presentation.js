@@ -768,6 +768,14 @@
 
     if (feedbackBox) {
       feedbackBox.className = 'quiz-feedback-box show ' + (isCorrect ? 'correct' : 'wrong');
+
+      // Se for o Quiz 02 (último da demonstração) e o curso estiver bloqueado, personaliza o botão de avanço
+      if (container.getAttribute('data-quiz-id') === '2' && !state.isUnlocked && isCorrect) {
+        const nextBtn = feedbackBox.querySelector('.action-pill.primary');
+        if (nextBtn) {
+          nextBtn.innerHTML = '🔒 Concluir Demonstração &amp; Desbloquear Curso →';
+        }
+      }
       if (feedbackTitle) {
         feedbackTitle.innerHTML = isCorrect
           ? '🎉 Resposta Correta! Excelente decisão!'
@@ -1531,8 +1539,14 @@
         return;
       }
 
-      // 2. Verificação via Token Criptográfico na URL (?token=... ou ?acesso=... ou ?key=...)
+      // 2. Verificação de parâmetro forçado de demonstração (?demo ou ?bloquear)
       const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.has('demo') || urlParams.has('bloquear')) {
+        lockCourse();
+        return;
+      }
+
+      // 3. Verificação via Token Criptográfico na URL (?token=... ou ?acesso=... ou ?key=...)
       const accessParam = (
         urlParams.get('token') ||
         urlParams.get('acesso') ||
