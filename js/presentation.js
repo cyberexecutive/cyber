@@ -1539,14 +1539,38 @@
         return;
       }
 
-      // 2. Verificação de parâmetro forçado de demonstração (?demo ou ?bloquear)
       const urlParams = new URLSearchParams(window.location.search);
-      if (urlParams.has('demo') || urlParams.has('bloquear')) {
+
+      // 2. Modo de Teste: Forçar bloqueio / demonstração (?demo=1 ou ?bloquear=1)
+      if (urlParams.get('demo') === '1' || urlParams.get('bloquear') === '1') {
         lockCourse();
         return;
       }
 
-      // 3. Verificação via Token Criptográfico na URL (?token=... ou ?acesso=... ou ?key=...)
+      // 3. Acesso Direto de Gestor via URL (?gestor=1 ou ?admin=1)
+      if (urlParams.get('gestor') === '1' || urlParams.get('admin') === '1') {
+        unlockCourse(true, '👑 Modo Gestor Ativado! Todos os 34 slides e módulos liberados sem restrições.', true);
+        return;
+      }
+
+      // 4. Acesso Automático de Aluno Pós-Compra (Kiwify e Hotmart)
+      // Detecta parâmetros oficiais de compra aprovada (?aluno=1, ?acesso=aluno, ?compra=aprovada, ?status=approved)
+      const isAutoStudentParam = (
+        urlParams.get('aluno') === '1' ||
+        urlParams.get('acesso') === 'aluno' ||
+        urlParams.get('acesso') === 'liberado' ||
+        urlParams.get('compra') === 'aprovada' ||
+        urlParams.get('status') === 'approved' ||
+        urlParams.get('liberado') === '1' ||
+        urlParams.has('sucesso')
+      );
+
+      if (isAutoStudentParam) {
+        unlockCourse(true, '🎉 Acesso Completo Liberado! Seja muito bem-vindo(a) ao treinamento.', false);
+        return;
+      }
+
+      // 5. Verificação via Token / Chave Criptográfica na URL (?key=... ou ?token=... ou ?acesso=...)
       const accessParam = (
         urlParams.get('token') ||
         urlParams.get('acesso') ||
@@ -1561,7 +1585,7 @@
         return;
       }
 
-      // 3. Verificação de Chave/Token persistido em localStorage
+      // 6. Verificação de Acesso Persistido em localStorage
       const savedUnlock = localStorage.getItem('cybersec_course_unlocked');
       const savedRole = localStorage.getItem('cybersec_user_role');
       if (savedUnlock === 'true') {
