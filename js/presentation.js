@@ -402,7 +402,7 @@
       }
 
       const savedName = localStorage.getItem('cybersec_student_name');
-      if (savedName && !savedName.toLowerCase().includes('claudinei')) {
+      if (savedName) {
         state.studentName = savedName;
       }
       const savedCpf = localStorage.getItem('cybersec_student_cpf');
