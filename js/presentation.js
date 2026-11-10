@@ -717,7 +717,7 @@
         </div>
       </div>
       <div class="zoomed-body">
-        <p style="font-size: clamp(1.2rem, 1.8vw, 1.6rem); line-height: 1.55; font-weight: 500;">
+        <p>
           ${text}
         </p>
       </div>
