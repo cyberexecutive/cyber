@@ -360,6 +360,13 @@
     state.totalSlides = dom.slides.length || 34;
     if (dom.totalNum) dom.totalNum.textContent = String(state.totalSlides).padStart(2, '0');
 
+    // Restaura tema salvo (Liquid Glass Fosco Claro ou Escuro)
+    try {
+      if (localStorage.getItem('cybersec_theme') === 'light') {
+        document.body.classList.add('light-mode');
+      }
+    } catch (e) {}
+
     // Carrega dados salvos em localStorage
     loadSavedProgress();
 
@@ -710,7 +717,7 @@
         </div>
       </div>
       <div class="zoomed-body">
-        <p style="font-size: clamp(1.2rem, 1.8vw, 1.6rem); line-height: 1.55; color: #f8fafc; font-weight: 500;">
+        <p style="font-size: clamp(1.2rem, 1.8vw, 1.6rem); line-height: 1.55; font-weight: 500;">
           ${text}
         </p>
       </div>
@@ -1440,7 +1447,10 @@
   }
 
   function toggleTheme() {
-    document.body.classList.toggle('light-mode');
+    const isLight = document.body.classList.toggle('light-mode');
+    try {
+      localStorage.setItem('cybersec_theme', isLight ? 'light' : 'dark');
+    } catch (e) {}
   }
 
   /**

@@ -1447,34 +1447,506 @@ body.light-mode .slide {
   margin-bottom: 0;
 }
 
-/* Modo Claro para o Modal de Card */
+/* ==========================================================================
+   TEMA LIQUID GLASS FOSCO DO IPHONE (LIGHT MODE)
+   Estética Apple iOS Frosted Glassmorphism de Altíssima Legibilidade e Elegância
+   ========================================================================== */
+
+body.light-mode {
+  --bg-dark: #f8fafc;
+  --bg-gradient: radial-gradient(circle at 12% 15%, rgba(224, 242, 254, 0.7) 0%, transparent 45%),
+                 radial-gradient(circle at 88% 18%, rgba(241, 245, 249, 0.8) 0%, transparent 45%),
+                 radial-gradient(circle at 50% 80%, rgba(226, 232, 240, 0.6) 0%, transparent 50%),
+                 radial-gradient(circle at 80% 85%, rgba(254, 243, 199, 0.35) 0%, transparent 45%),
+                 linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+  --surface-card: rgba(255, 255, 255, 0.76);
+  --surface-card-hover: rgba(255, 255, 255, 0.92);
+  --surface-border: rgba(255, 255, 255, 0.85);
+  --surface-border-active: rgba(2, 132, 199, 0.5);
+  --text-main: #0f172a;
+  --text-muted: #334155;
+  --text-dim: #475569;
+  --glass-shadow: 0 16px 36px -8px rgba(15, 23, 42, 0.08), 0 0 1px 1px rgba(255, 255, 255, 0.9);
+  --card-shadow: 0 10px 30px -8px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.04);
+  background: 
+    radial-gradient(circle at 12% 15%, rgba(224, 242, 254, 0.75) 0%, transparent 45%),
+    radial-gradient(circle at 88% 18%, rgba(240, 253, 250, 0.75) 0%, transparent 45%),
+    radial-gradient(circle at 50% 80%, rgba(226, 232, 240, 0.65) 0%, transparent 50%),
+    radial-gradient(circle at 80% 85%, rgba(254, 243, 199, 0.4) 0%, transparent 45%),
+    linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%) !important;
+  background-attachment: fixed !important;
+  color: #0f172a !important;
+}
+
+body.light-mode #bg-mesh {
+  opacity: 0.28 !important;
+  filter: contrast(115%) brightness(108%) !important;
+}
+
+/* 1. Container do Slide no estilo Vidro Líquido Fosco Apple */
+body.light-mode .slide {
+  background: rgba(255, 255, 255, 0.76) !important;
+  backdrop-filter: blur(32px) saturate(190%) !important;
+  -webkit-backdrop-filter: blur(32px) saturate(190%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.88) !important;
+  box-shadow: 
+    0 20px 48px -10px rgba(15, 23, 42, 0.08),
+    0 1px 3px rgba(15, 23, 42, 0.04),
+    inset 0 1px 2px rgba(255, 255, 255, 0.95) !important;
+  color: #0f172a !important;
+}
+
+/* 2. Tipografia e Cabeçalho do Slide */
+body.light-mode .slide-category {
+  color: #0284c7 !important;
+  background: rgba(14, 165, 233, 0.12) !important;
+  border: 1px solid rgba(2, 132, 199, 0.5) !important;
+}
+body.light-mode .slide-title {
+  color: #0f172a !important;
+  text-shadow: none !important;
+}
+body.light-mode .slide-subtitle {
+  color: #334155 !important;
+}
+body.light-mode .slide-body {
+  color: #1e293b !important;
+}
+body.light-mode .slide p,
+body.light-mode .slide span,
+body.light-mode .slide li {
+  color: #1e293b;
+}
+
+/* 3. Cards Informativos, Caixas de Casos e Destaques */
+body.light-mode .info-card,
+body.light-mode .case-box,
+body.light-mode .card-box,
+body.light-mode .summary-card,
+body.light-mode .practice-box,
+body.light-mode .overview-col,
+body.light-mode .overview-card {
+  background: rgba(255, 255, 255, 0.68) !important;
+  backdrop-filter: blur(24px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.85) !important;
+  box-shadow: 0 8px 24px -4px rgba(15, 23, 42, 0.05), inset 0 1px 1px rgba(255, 255, 255, 0.9) !important;
+  color: #0f172a !important;
+}
+body.light-mode .info-card:hover,
+body.light-mode .case-box:hover,
+body.light-mode .overview-card:hover {
+  background: rgba(255, 255, 255, 0.92) !important;
+  border-color: rgba(2, 132, 199, 0.5) !important;
+  box-shadow: 0 14px 32px -4px rgba(15, 23, 42, 0.09), inset 0 1px 1px #fff !important;
+}
+body.light-mode .card-title,
+body.light-mode .case-title {
+  color: #0f172a !important;
+}
+body.light-mode .card-desc,
+body.light-mode .case-desc,
+body.light-mode .info-card p,
+body.light-mode .case-box p {
+  color: #334155 !important;
+}
+body.light-mode .card-icon {
+  background: rgba(241, 245, 249, 0.85) !important;
+  border: 1px solid rgba(226, 232, 240, 0.85) !important;
+}
+body.light-mode .card-icon.cyan { color: #0284c7 !important; }
+body.light-mode .card-icon.blue { color: #2563eb !important; }
+body.light-mode .card-icon.emerald { color: #059669 !important; }
+body.light-mode .card-icon.amber { color: #d97706 !important; }
+body.light-mode .card-icon.rose { color: #dc2626 !important; }
+
+/* 4. Alertas e Callouts */
+body.light-mode .alert-callout {
+  background: rgba(254, 242, 242, 0.85) !important;
+  border: 1px solid rgba(239, 68, 68, 0.3) !important;
+  color: #991b1b !important;
+}
+body.light-mode .alert-callout.success {
+  background: rgba(236, 253, 245, 0.85) !important;
+  border: 1px solid rgba(16, 185, 129, 0.3) !important;
+  color: #065f46 !important;
+}
+body.light-mode .alert-callout.warning {
+  background: rgba(254, 252, 232, 0.85) !important;
+  border: 1px solid rgba(234, 179, 8, 0.3) !important;
+  color: #854d0e !important;
+}
+
+/* 5. Área de Quizzes Interativos e Alternativas */
+body.light-mode .quiz-scenario {
+  background: rgba(241, 245, 249, 0.78) !important;
+  border: 1px solid rgba(203, 213, 225, 0.8) !important;
+  color: #1e293b !important;
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.8) !important;
+}
+body.light-mode .quiz-scenario-text {
+  color: #1e293b !important;
+}
+body.light-mode .quiz-question {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+body.light-mode .quiz-opt-btn {
+  background: rgba(255, 255, 255, 0.82) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border: 1.5px solid rgba(203, 213, 225, 0.85) !important;
+  color: #0f172a !important;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04), inset 0 1px 1px rgba(255, 255, 255, 0.9) !important;
+}
+body.light-mode .quiz-opt-btn:hover {
+  background: rgba(255, 255, 255, 0.98) !important;
+  border-color: #0284c7 !important;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08), inset 0 1px 1px #fff !important;
+}
+body.light-mode .quiz-opt-letter {
+  background: rgba(241, 245, 249, 0.95) !important;
+  color: #0f172a !important;
+  border: 1px solid rgba(203, 213, 225, 0.85) !important;
+  font-weight: 700 !important;
+}
+body.light-mode .quiz-opt-desc {
+  color: #0f172a !important;
+  font-weight: 500 !important;
+}
+body.light-mode .quiz-opt-btn.selected {
+  background: rgba(14, 165, 233, 0.12) !important;
+  border-color: #0284c7 !important;
+  color: #0284c7 !important;
+}
+body.light-mode .quiz-opt-btn.selected .quiz-opt-letter {
+  background: #0284c7 !important;
+  color: #ffffff !important;
+  border-color: #0284c7 !important;
+}
+body.light-mode .quiz-opt-btn.correct {
+  background: rgba(209, 250, 229, 0.9) !important;
+  border-color: #059669 !important;
+  color: #065f46 !important;
+}
+body.light-mode .quiz-opt-btn.correct .quiz-opt-letter {
+  background: #059669 !important;
+  color: #ffffff !important;
+  border-color: #059669 !important;
+}
+body.light-mode .quiz-opt-btn.wrong {
+  background: rgba(254, 226, 226, 0.9) !important;
+  border-color: #dc2626 !important;
+  color: #991b1b !important;
+}
+body.light-mode .quiz-opt-btn.wrong .quiz-opt-letter {
+  background: #dc2626 !important;
+  color: #ffffff !important;
+  border-color: #dc2626 !important;
+}
+body.light-mode .quiz-feedback-box {
+  background: rgba(255, 255, 255, 0.92) !important;
+  backdrop-filter: blur(24px) saturate(180%) !important;
+  border: 1.5px solid rgba(203, 213, 225, 0.9) !important;
+  color: #0f172a !important;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08) !important;
+}
+body.light-mode .quiz-feedback-box.correct {
+  background: rgba(236, 253, 245, 0.95) !important;
+  border-color: rgba(16, 185, 129, 0.5) !important;
+}
+body.light-mode .quiz-feedback-box.wrong {
+  background: rgba(254, 242, 242, 0.95) !important;
+  border-color: rgba(239, 68, 68, 0.5) !important;
+}
+body.light-mode .quiz-feedback-text,
+body.light-mode .quiz-feedback-text * {
+  color: #0f172a !important;
+}
+body.light-mode .quiz-confirm-bar .btn-confirm-quiz {
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 16px rgba(2, 132, 199, 0.35) !important;
+}
+
+/* 6. MODAL DE ZOOM LIQUID GLASS FOSCO (Ultra Nítido, Alto Contraste e 100% Legível) */
+body.light-mode .card-modal-backdrop {
+  background: rgba(15, 23, 42, 0.38) !important;
+  backdrop-filter: blur(18px) !important;
+  -webkit-backdrop-filter: blur(18px) !important;
+}
 body.light-mode .card-modal-container {
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(241, 245, 249, 0.99));
-  border-color: rgba(6, 182, 212, 0.7);
-  box-shadow: 0 0 60px rgba(6, 182, 212, 0.2), 0 20px 60px rgba(0, 0, 0, 0.15);
+  background: rgba(255, 255, 255, 0.92) !important;
+  backdrop-filter: blur(36px) saturate(200%) !important;
+  -webkit-backdrop-filter: blur(36px) saturate(200%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.95) !important;
+  box-shadow: 
+    0 25px 70px -10px rgba(15, 23, 42, 0.18),
+    0 2px 8px rgba(15, 23, 42, 0.05),
+    inset 0 1px 2px #ffffff !important;
+  color: #0f172a !important;
 }
 body.light-mode .zoomed-title {
-  color: #0f172a;
+  color: #0f172a !important;
+  font-weight: 800 !important;
+}
+body.light-mode .zoomed-tag {
+  background: rgba(241, 245, 249, 0.9) !important;
+  border: 1px solid rgba(203, 213, 225, 0.85) !important;
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+body.light-mode .zoomed-meta div {
+  color: #334155 !important;
 }
 body.light-mode .zoomed-body {
-  color: #334155;
+  background: rgba(255, 255, 255, 0.82) !important;
+  border: 1px solid rgba(203, 213, 225, 0.85) !important;
+  border-radius: 16px !important;
+  color: #0f172a !important;
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.95), 0 2px 8px rgba(15, 23, 42, 0.04) !important;
+}
+body.light-mode .zoomed-body p,
+body.light-mode .zoomed-body div,
+body.light-mode .zoomed-body span,
+body.light-mode .zoomed-body strong,
+body.light-mode .zoomed-body * {
+  color: #0f172a !important;
+  -webkit-text-fill-color: #0f172a !important;
 }
 body.light-mode .card-modal-close {
-  background: rgba(0, 0, 0, 0.06);
-  border-color: rgba(0, 0, 0, 0.15);
-  color: #0f172a;
+  background: rgba(241, 245, 249, 0.85) !important;
+  border: 1px solid rgba(203, 213, 225, 0.85) !important;
+  color: #0f172a !important;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.05) !important;
+}
+body.light-mode .card-modal-close:hover {
+  background: rgba(255, 255, 255, 1) !important;
+  color: #000000 !important;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12) !important;
 }
 body.light-mode .zoomed-code-box {
-  background: #f8fafc;
-  border-color: #cbd5e1;
+  background: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+body.light-mode .zoomed-code-box pre,
+body.light-mode .zoomed-code-box code {
+  color: #0f172a !important;
 }
 body.light-mode .zoomed-media-stage {
-  background: #e2e8f0;
-  border-color: #cbd5e1;
+  background: #e2e8f0 !important;
+  border-color: #cbd5e1 !important;
 }
 body.light-mode .zoomed-subtitle-large {
-  color: #334155;
+  color: #334155 !important;
 }
+body.light-mode .zoomed-quiz-actions {
+  border-top-color: rgba(226, 232, 240, 0.85) !important;
+}
+body.light-mode .zoomed-quiz-actions .action-pill {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border: 1.5px solid rgba(203, 213, 225, 0.9) !important;
+  color: #0f172a !important;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05) !important;
+}
+body.light-mode .zoomed-quiz-actions .action-pill:hover {
+  background: rgba(255, 255, 255, 1) !important;
+  border-color: #0284c7 !important;
+  color: #0284c7 !important;
+}
+body.light-mode .zoomed-quiz-actions .action-pill.primary {
+  display: inline-flex !important;
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%) !important;
+  border-color: #0284c7 !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  box-shadow: 0 4px 16px rgba(2, 132, 199, 0.35) !important;
+}
+body.light-mode .zoomed-quiz-actions .action-pill.primary * {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+/* 7. Barra Superior (Header) e Cápsula Dock Inferior Apple */
+body.light-mode .top-header {
+  color: #0f172a !important;
+}
+body.light-mode .brand-badge {
+  background: rgba(255, 255, 255, 0.82) !important;
+  backdrop-filter: blur(24px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.9) !important;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05) !important;
+  color: #0f172a !important;
+}
+body.light-mode .brand-text {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+body.light-mode .brand-sub {
+  color: #475569 !important;
+}
+body.light-mode .header-btn {
+  background: rgba(255, 255, 255, 0.82) !important;
+  backdrop-filter: blur(18px) !important;
+  -webkit-backdrop-filter: blur(18px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.9) !important;
+  color: #334155 !important;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04) !important;
+}
+body.light-mode .header-btn:hover {
+  background: rgba(255, 255, 255, 1) !important;
+  color: #0f172a !important;
+  border-color: rgba(2, 132, 199, 0.5) !important;
+}
+body.light-mode .bottom-dock {
+  background: rgba(255, 255, 255, 0.84) !important;
+  backdrop-filter: blur(28px) saturate(190%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(190%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.95) !important;
+  box-shadow: 
+    0 16px 36px -8px rgba(15, 23, 42, 0.12),
+    0 1px 3px rgba(15, 23, 42, 0.04),
+    inset 0 1px 2px #ffffff !important;
+}
+body.light-mode .dock-btn {
+  color: #334155 !important;
+}
+body.light-mode .dock-btn:hover {
+  background: rgba(241, 245, 249, 0.85) !important;
+  color: #0f172a !important;
+}
+body.light-mode .dock-counter {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+body.light-mode .dock-counter span {
+  color: #475569 !important;
+}
+
+/* 8. Gaveta Lateral de Conteúdo (Modules Drawer) */
+body.light-mode .drawer-backdrop {
+  background: rgba(15, 23, 42, 0.32) !important;
+  backdrop-filter: blur(14px) !important;
+}
+body.light-mode .drawer-panel {
+  background: rgba(255, 255, 255, 0.92) !important;
+  backdrop-filter: blur(36px) saturate(190%) !important;
+  -webkit-backdrop-filter: blur(36px) saturate(190%) !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.95) !important;
+  box-shadow: 16px 0 44px rgba(15, 23, 42, 0.14) !important;
+  color: #0f172a !important;
+}
+body.light-mode .drawer-header {
+  border-bottom: 1px solid rgba(226, 232, 240, 0.8) !important;
+}
+body.light-mode .drawer-title-group h3 {
+  color: #0f172a !important;
+}
+body.light-mode .drawer-title-group p {
+  color: #475569 !important;
+}
+body.light-mode .drawer-close-btn {
+  background: rgba(241, 245, 249, 0.85) !important;
+  color: #0f172a !important;
+  border: 1px solid rgba(203, 213, 225, 0.85) !important;
+}
+body.light-mode .drawer-progress-box {
+  background: rgba(248, 250, 252, 0.85) !important;
+  border: 1px solid rgba(226, 232, 240, 0.9) !important;
+}
+body.light-mode .drawer-progress-labels span {
+  color: #334155 !important;
+}
+body.light-mode .drawer-module-card {
+  background: rgba(255, 255, 255, 0.78) !important;
+  border: 1px solid rgba(226, 232, 240, 0.9) !important;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03) !important;
+}
+body.light-mode .drawer-module-card:hover {
+  background: rgba(255, 255, 255, 0.98) !important;
+  border-color: #0284c7 !important;
+}
+body.light-mode .drawer-module-card.active-mod {
+  background: rgba(14, 165, 233, 0.12) !important;
+  border-color: #0284c7 !important;
+}
+body.light-mode .drawer-module-num {
+  color: #0284c7 !important;
+}
+body.light-mode .drawer-module-title {
+  color: #0f172a !important;
+}
+body.light-mode .drawer-lesson-pill {
+  background: rgba(241, 245, 249, 0.85) !important;
+  border: 1px solid rgba(203, 213, 225, 0.8) !important;
+  color: #334155 !important;
+}
+body.light-mode .drawer-lesson-pill.active {
+  background: #0284c7 !important;
+  color: #ffffff !important;
+  border-color: #0284c7 !important;
+}
+
+/* 9. Formulários, Inputs, Paywall e Desbloqueio */
+body.light-mode .student-id-input,
+body.light-mode .unlock-input,
+body.light-mode .cert-name-input {
+  background: rgba(255, 255, 255, 0.92) !important;
+  border: 1.5px solid rgba(203, 213, 225, 0.95) !important;
+  color: #0f172a !important;
+  box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.05) !important;
+}
+body.light-mode .student-id-input:focus,
+body.light-mode .unlock-input:focus,
+body.light-mode .cert-name-input:focus {
+  border-color: #0284c7 !important;
+  background: #ffffff !important;
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.35) !important;
+}
+body.light-mode .paywall-card,
+body.light-mode .unlock-modal-card {
+  background: rgba(255, 255, 255, 0.94) !important;
+  backdrop-filter: blur(36px) saturate(200%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.95) !important;
+  box-shadow: 0 25px 70px rgba(15, 23, 42, 0.2) !important;
+  color: #0f172a !important;
+}
+body.light-mode .paywall-title,
+body.light-mode .unlock-title {
+  color: #0f172a !important;
+}
+body.light-mode .paywall-desc,
+body.light-mode .unlock-desc,
+body.light-mode .paywall-benefit-item {
+  color: #334155 !important;
+}
+
+/* 10. Dashboard Executivo e Certificado (Slides 31 a 34) */
+body.light-mode .dashboard-metric-card,
+body.light-mode .chart-card {
+  background: rgba(255, 255, 255, 0.78) !important;
+  backdrop-filter: blur(24px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.88) !important;
+  box-shadow: 0 8px 24px -4px rgba(15, 23, 42, 0.06), inset 0 1px 1px rgba(255, 255, 255, 0.9) !important;
+  color: #0f172a !important;
+}
+body.light-mode .metric-num {
+  color: #0f172a !important;
+}
+body.light-mode .metric-label {
+  color: #475569 !important;
+}
+body.light-mode .overview-badge {
+  background: rgba(241, 245, 249, 0.85) !important;
+  color: #0f172a !important;
+  border: 1px solid rgba(203, 213, 225, 0.85) !important;
+}
+body.light-mode .certificate-card {
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.12), 0 2px 6px rgba(15, 23, 42, 0.04) !important;
+}
+
 
 /* -------------------------------------------------------------
    Responsividade
