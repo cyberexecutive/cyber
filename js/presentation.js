@@ -197,11 +197,7 @@
    * Inicia o treinamento no Slide 1: exige cadastro de Nome e CPF se ainda não realizado
    */
   function startCourse() {
-    if (!state.isStudentRegistered && !state.isGestor) {
-      openStudentIdModal();
-    } else {
-      goToSlide(2);
-    }
+    goToSlide(2);
   }
 
   /**
@@ -958,7 +954,14 @@
       return;
     }
 
-    // 2. Validação estrita de conclusão de todos os desafios práticos (exceto Gestor)
+    // 2. Se o aluno ainda não preencheu Nome e CPF para o certificado
+    if (!state.isStudentRegistered && !state.isGestor) {
+      showToast('⚠️ Preencha seu Nome Completo e CPF para emissão do Certificado Oficial.', 4000);
+      openStudentIdModal();
+      return;
+    }
+
+    // 3. Validação estrita de conclusão de todos os desafios práticos (exceto Gestor)
     if (!state.isGestor) {
       const pendingMod = modulesMeta.find(m => m.quizSlide && !(state.quizzes[m.id] && state.quizzes[m.id].correct));
       if (pendingMod) {
@@ -1290,12 +1293,8 @@
     if (slideNum < 1) slideNum = 1;
     if (slideNum > state.totalSlides) slideNum = state.totalSlides;
 
-    // 1. Trava de Cadastro Inicial do Aluno (Nome Completo e CPF obrigatórios para iniciar)
-    if (slideNum > 1 && !state.isStudentRegistered && !state.isGestor) {
-      openStudentIdModal();
-      showToast('⚠️ Preencha seu Nome Completo e CPF para iniciar o treinamento.', 4000);
-      return;
-    }
+    // 1. Acesso Livre: O curso inicia diretamente sem interrupção de formulário inicial.
+    // A identificação oficial (Nome e CPF) é solicitada exclusivamente para emissão do Certificado.
 
     // 2. Trava de Demonstração / Paywall nos Módulos 03 a 11
     if (!state.isUnlocked && slideNum > state.maxDemoSlide) {
